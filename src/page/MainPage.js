@@ -1,10 +1,26 @@
 import React, {useEffect, useState} from 'react'
+import styled from "styled-components";
 import {SelectMenu} from "../component/MainPage/SelectMenu";
+import img_plug from "../svg/img_plug.svg";
+import img_plug_white from "../svg/img_plug_white.svg";
+import img_focus from "../svg/img_focus.svg";
+import img_focus_green from "../svg/img_focus_green.svg";
 
 /*global kakao*/
+const markers = []
+let map;
 
 export const MainPage = () => {
+    const [plug, setPlug] = useState(false);
+    const [focus, setFocus] = useState(false);
+    let ps;
+
     useEffect(()=>{
+        myLocate();
+    }, [])
+
+    const myLocate = () => {
+        markers.pop()
         let container = document.getElementById('map');
         let options = {
             // 국민대 37.610189448398906, 126.99703140609459
@@ -19,16 +35,17 @@ export const MainPage = () => {
                     lon = position.coords.longitude;
 
                 let locPosition = new kakao.maps.LatLng(lat, lon)
-                displayMarker(locPosition);
+                displayMyLocate(locPosition);
             });
         }
-        else{
+        else {
             let locPosition = new kakao.maps.LatLng(37.5677463677699,126.9153946742084)
-            displayMarker(locPosition);
+            displayMyLocate(locPosition);
         }
-        let map = new kakao.maps.Map(container, options);
 
-        const displayMarker = (locPosition) => {
+        map = new kakao.maps.Map(container, options);
+
+        function displayMyLocate(locPosition){
             // 마커를 생성합니다.
             let marker = new kakao.maps.Marker({
                 map: map,
@@ -37,12 +54,135 @@ export const MainPage = () => {
 
             map.setCenter(locPosition);
         }
-    }, [])
+
+        // 지도를 클릭했을때 클릭한 위치에 마커를 추가하도록 지도에 클릭이벤트를 등록합니다
+        kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+            // 클릭한 위치에 마커를 표시합니다
+            addMarker(mouseEvent.latLng);
+        });
+
+    // 지도에 표시된 마커 객체를 가지고 있을 배열입니다
+
+    // // 마커 하나를 지도위에 표시합니다
+    //     addMarker(new kakao.maps.LatLng(37.610189448398906, 126.99703140609459));
+
+    // 마커를 생성하고 지도위에 표시하는 함수입니다
+        function addMarker(position) {
+
+            // 마커를 생성합니다
+            let marker = new kakao.maps.Marker({
+                position: position
+            });
+
+            // 마커가 지도 위에 표시되도록 설정합니다
+            marker.setMap(map);
+
+            // 생성된 마커를 배열에 추가합니다
+            markers.push(marker);
+        }
+    }
+
+    const clickFocus = () => {
+        setFocus(!focus)
+        if (focus) myLocate();
+    }
+
+    const clickPlug = () => {
+        setPlug(!plug)
+        console.log(plug)
+        console.log(markers)
+        for (let i = 0; i < markers.length; i++) {
+            if (plug) markers[i].setMap(map);
+            else markers[i].setMap(null);
+        }
+    }
 
     return <>
+        <Map id={"map"}>
+            <PlugButton bg={plug?"#4AD395":"#FFFFFF"} onClick={()=>clickPlug()}>
+                {plug?
+                    <WhitePlugIcon/>
+                    :
+                    <PlugIcon/>
+                }
+            </PlugButton>
+            <FocusButton onClick={()=>clickFocus()}>
+                {focus?
+                    <FocusIcon/>
+                    :
+                    <GreenFocusIcon/>
+                }
+            </FocusButton>
+            <SelectMenu/>
+        </Map>
 
-        <div id="map" style={{width:"100vw", height:"100vh"}}></div>
-
-        <SelectMenu/>
     </>
 }
+
+const Map = styled.div`
+  width : 100vw;
+  height : 100vh;
+`
+
+const PlugIcon = styled.img.attrs({
+    src : img_plug
+})`
+  width : 40px;
+  height : 40px;
+  margin : auto;
+`
+
+const WhitePlugIcon = styled.img.attrs({
+    src : img_plug_white
+})`
+  width : 40px;
+  height : 40px;
+  margin : auto;
+`
+
+const PlugButton = styled.div`
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  right: 20px;
+  top: 20px;
+  background: ${props=>props.bg};
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  z-index : 10;
+  
+  display : flex;
+  justify-content: center;
+`
+
+const FocusIcon = styled.img.attrs({
+    src : img_focus
+})`
+  width: 30px;
+  height: 30px;
+  margin : auto;
+`
+
+const GreenFocusIcon = styled.img.attrs({
+    src : img_focus_green
+})`
+  width: 30px;
+  height: 30px;
+  margin : auto;
+`
+
+const FocusButton = styled.div`
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  left: 20px;
+  bottom: 200px;
+
+  background: #FFFFFF;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  z-index : 10;
+
+  display : flex;
+  justify-content: center;
+`
