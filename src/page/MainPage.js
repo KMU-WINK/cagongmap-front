@@ -8,8 +8,7 @@ import img_focus_green from "../svg/img_focus_green.svg";
 
 /*global kakao*/
 const markers = []
-const result1 = []
-const result2 = []
+const result = []
 let map;
 
 export const MainPage = () => {
@@ -56,63 +55,34 @@ export const MainPage = () => {
 
             map.setCenter(locPosition);
         }
-
-        // 지도를 클릭했을때 클릭한 위치에 마커를 추가하도록 지도에 클릭이벤트를 등록합니다
-        kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
-            // 클릭한 위치에 마커를 표시합니다
-            addMarker(mouseEvent.latLng);
-        });
-
-        // 지도에 표시된 마커 객체를 가지고 있을 배열입니다
-
-        // // 마커 하나를 지도위에 표시합니다
-        //     addMarker(new kakao.maps.LatLng(37.610189448398906, 126.99703140609459));
-
-        // 마커를 생성하고 지도위에 표시하는 함수입니다
-        function addMarker(position) {
-
-            // 마커를 생성합니다
-            let marker = new kakao.maps.Marker({
-                position: position
-            });
-
-            // 마커가 지도 위에 표시되도록 설정합니다
-            marker.setMap(map);
-
-            // 생성된 마커를 배열에 추가합니다
-            markers.push(marker);
-        }
-
-
     }
 
-    const clickFocus = () => {
+    const clickFocus = async () => {
         setFocus(!focus)
-        if (focus) myLocate();
+        if (focus) {
+            setPlug(false);
+            await myLocate();
+            // setFocus(true)
+        }
     }
 
     const clickPlug = () => {
         setPlug(!plug)
-        console.log(plug)
-
-        console.log(markers)
 
         let ps = new kakao.maps.services.Places(map);
 
-        // 카테고리로 은행을 검색합니다
+        // 카테고리로 카페 검색
        ps.categorySearch('CE7', placesSearchCB, {useMapBounds: true});
 
-        // 키워드 검색 완료 시 호출되는 콜백함수 입니다
+        // 키워드 검색 완료 시 호출되는 콜백함수
         function placesSearchCB(data, status, pagination) {
             if (status === kakao.maps.services.Status.OK) {
                 for (let i = 0; i < data.length; i++) {
-                    if (plug) displayMarker(data[i]);
-                    else displayMarker(data[i])
+                    if (!plug) displayMarker(data[i]);
+                    else removeMarker()
                 }
             }
         }
-
-        console.log(result1)
 
         function displayMarker(place) {
             // 마커를 생성하고 지도에 표시합니다
@@ -121,13 +91,20 @@ export const MainPage = () => {
                 position: new kakao.maps.LatLng(place.y, place.x)
             });
 
-            result1.push(marker)
-            // 마커에 클릭이벤트를 등록합니다
+            result.push(marker)
+            // 마커에 클릭이벤트를 등록
             kakao.maps.event.addListener(marker, 'click', function () {
                 // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
                 infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
                 infowindow.open(map, marker);
             });
+        }
+
+        function removeMarker() {
+            for ( let i = 0; i < result.length; i++ ) {
+                result[i].setMap(null);
+            }
+            result.pop()
         }
     }
 
