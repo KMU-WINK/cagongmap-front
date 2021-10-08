@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react'
 import styled from "styled-components";
 import {SelectMenu} from "../component/MainPage/SelectMenu";
-import img_plug from "../svg/img_plug.svg";
-import img_plug_white from "../svg/img_plug_white.svg";
-import img_focus from "../svg/img_focus.svg";
-import img_focus_green from "../svg/img_focus_green.svg";
+import img_plug from "../img/img_plug.svg";
+import img_plug_white from "../img/img_plug_white.svg";
+import img_focus from "../img/img_focus.svg";
+import img_focus_green from "../img/img_focus_green.svg";
 
 /*global kakao*/
 const markers = []
@@ -14,7 +14,6 @@ let map;
 export const MainPage = () => {
     const [plug, setPlug] = useState(false);
     const [focus, setFocus] = useState(false);
-    let ps;
     let infowindow = new kakao.maps.InfoWindow({zIndex:1});
 
     useEffect(()=>{
@@ -48,7 +47,7 @@ export const MainPage = () => {
 
         function displayMyLocate(locPosition) {
             // 마커를 생성합니다.
-            let marker = new kakao.maps.Marker({
+            new kakao.maps.Marker({
                 map: map,
                 position: locPosition
             });
@@ -160,7 +159,7 @@ const PlugButton = styled.div`
   background: ${props=>props.bg};
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 10px;
-  z-index : 10;
+  z-index : 2;
   
   display : flex;
   justify-content: center;
@@ -192,7 +191,7 @@ const FocusButton = styled.div`
   background: #FFFFFF;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 10px;
-  z-index : 10;
+  z-index : 2;
 
   display : flex;
   justify-content: center;
