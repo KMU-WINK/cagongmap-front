@@ -1,0 +1,24 @@
+body {
+    background-color: #4AD395;
+    align-content: center;
+}
+.SplashPage{
+    display: table-cell;
+    width: 100vw;
+    height: 100vh;
+    vertical-align: middle;
+    text-align: center;
+}
+.logoimg {
+    width: 241px;
+    height: 200px;
+    display: block;
+    margin: auto;
+}
+.SplashPageText {
+    position: relative;
+    color: white;
+    margin: auto;
+    top: 33vh;
+    font-size: 1.1vw;
+}
