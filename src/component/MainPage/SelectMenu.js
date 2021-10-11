@@ -7,13 +7,11 @@ import './Button.css'
 export const SelectMenu = () => {
 
     return <>
-        <div>
-            <div id='parentStyle'>
-                <button id='styleFirst'> <img src ={img_menu1} alt = "table"/> <br/> 테이블 </button>
-                <button id='styleSecond'> <img src ={img_menu2} alt = "outlet"/> <br/> 콘센트 </button>
-                <button id='styleThird'> <img src ={img_search} alt = "search"/> </button>
-            </div>
-        </div>
+        <div className="container_menu">
+            <button className="table"> <img src ={img_menu1} alt = "table"/> <br/> 테이블 </button>
+            <button className="outlet"> <img src ={img_menu2} alt = "outlet"/> <br/> 콘센트 </button>
+            <button className="search"> <img src ={img_search} alt = "search"/> </button>
+        </div>        
     </>
 }
 
