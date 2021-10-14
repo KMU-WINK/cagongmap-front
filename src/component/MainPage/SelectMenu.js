@@ -7,14 +7,18 @@ import './Button.css'
 export const SelectMenu = () => {
 
     return <>
-        <div>
-            <div id='parentStyle'>
-                <button id='styleFirst'> <img src ={img_menu1} alt = "table"/> <br/> 테이블 </button>
-                <button id='styleSecond'> <img src ={img_menu2} alt = "outlet"/> <br/> 콘센트 </button>
-                <button id='styleThird'> <img src ={img_search} alt = "search"/> </button>
-            </div>
+        <div className="container_menu">
+            <button className="table" id = "table">
+                <img className="img_table" src ={img_menu1} alt = "table"/> <br/><br/>
+                <label className="label_table" for="table"> 테이블: 선택 안함 </label>
+            </button>
+            <button className="outlet" id = "outlet">
+                <img className="img_outlet" src ={img_menu2} alt = "outlet"/> <br/><br/>
+                <label className="label_outlet" for="outlet"> 콘센트: 선택 안함 </label>
+            </button>
+            <button className="search">
+                <img className="img_search" src ={img_search} alt = "search"/>
+            </button>
         </div>
     </>
 }
-
-export default SelectMenu;
