@@ -2,100 +2,80 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  width: 388px;
-  max-width: 90%;
+  max-width: 388px;
+  width : 90%;
   height: 140px;
   bottom: 50px;
   background: rgba(238, 238, 238, 0.92);
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 10px;
   display : flex;
+  justify-content: space-around;
+  align-items : center;
   z-index : 2;
 }
 
 .table {
   width: 110px;
   height: 110px;
-  right: 283px;
-  bottom: 65px;
   background: rgba(255, 255, 255, 0.92);
   border-radius: 10px;
   z-index : 2;
-  margin : auto;
+  margin-left : 10px;
+  margin-right : 5px;
   border: 0;
+
 }
 
 .outlet {
   width: 110px;
   height: 110px;
-  right: 159px;
-  bottom: 65px;
   background: rgba(255, 255, 255, 0.92);
   border-radius: 10px;
   z-index : 2;
-  margin : auto;
   border: 0;
 }
 
 .search {
   width: 110px;
   height: 110px;
-  right: 35px;
-  bottom: 65px;
   background: rgba(255, 255, 255, 0.92);
   border-radius: 10px;
+  margin-left : 5px;
+  margin-right : 10px;
   z-index : 2;
-  margin : auto;
   border: 0;
 }
 
 .img_table {
   width: 50px;
   height: 50px;
-  left: 65px;
-  top: 768px;
+  margin-bottom : 10px;
 }
 
 .img_outlet {
   width: 50px;
   height: 50px;
-  left: 189px;
-  top: 768px;
+  margin-bottom : 10px;
 }
 
 .img_search {
   width: 50px;
   height: 50px;
-  left: 313px;
-  top: 781px;
 }
 
 .label_table {
-  width: 101px;
-  height: 16px;
-  left: 40px;
-  top: 828px;
-  
-  font-family: Roboto;
   font-style: normal;
   font-weight: normal;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 16px;
-
   color: #000000;
 }
 
 .label_outlet {
-  width: 101px;
-  height: 16px;
-  left: 164px;
-  top: 828px;
-
-  font-family: Roboto;
   font-style: normal;
   font-weight: normal;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 16px;
-
   color: #000000;
 }
