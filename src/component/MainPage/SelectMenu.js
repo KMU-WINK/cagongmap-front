@@ -9,12 +9,12 @@ export const SelectMenu = () => {
     return <>
         <div className="container_menu">
             <button className="table" id = "table">
-                <img className="img_table" src ={img_menu1} alt = "table"/> <br/><br/>
-                <label className="label_table" for="table"> 테이블: 선택 안함 </label>
+                <img className="img_table" src ={img_menu1} alt = "table"/>
+                <div><label className="label_table" for="table"> 테이블: 선택 안함 </label></div>
             </button>
             <button className="outlet" id = "outlet">
-                <img className="img_outlet" src ={img_menu2} alt = "outlet"/> <br/><br/>
-                <label className="label_outlet" for="outlet"> 콘센트: 선택 안함 </label>
+                <img className="img_outlet" src ={img_menu2} alt = "outlet"/>
+                <div><label className="label_outlet" for="outlet"> 콘센트: 선택 안함 </label></div>
             </button>
             <button className="search">
                 <img className="img_search" src ={img_search} alt = "search"/>
