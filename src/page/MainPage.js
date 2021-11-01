@@ -1,12 +1,17 @@
 import React, {useEffect, useState} from 'react'
 import styled from "styled-components";
-import {SelectMenu} from "../component/MainPage/SelectMenu";
+import '../component/MainPage/Button.css'
 import img_plug from "../img/img_plug.svg";
 import img_plug_white from "../img/img_plug_white.svg";
 import img_focus from "../img/img_focus.svg";
 import img_focus_green from "../img/img_focus_green.svg";
+import img_menu1 from "../img/img_menu1.png";
+import img_menu2 from "../img/img_menu2.png";
+import img_search from "../img/img_search.png";
+import {PopUp} from "../component/PopUp/PopUp";
 
 /*global kakao*/
+
 const markers = []
 const result = []
 let map;
@@ -14,11 +19,16 @@ let map;
 export const MainPage = () => {
     const [plug, setPlug] = useState(false);
     const [focus, setFocus] = useState(false);
+    const [select, setSelect] = useState('') // 어떤 팝업창을 띄울지 -> table 또는 plug, 팝업을 띄우지 않을 때는 ''
     let infowindow = new kakao.maps.InfoWindow({zIndex:1});
 
     useEffect(()=>{
         myLocate();
     }, [])
+
+    const getState = (state) => {
+        setSelect(state);
+    }
 
     const myLocate = () => {
         markers.pop()
@@ -123,9 +133,33 @@ export const MainPage = () => {
                     <GreenFocusIcon/>
                 }
             </FocusButton>
-            <SelectMenu/>
+
+            <div className="container_menu">
+                <button className="table" id="table" onClick={()=>{setSelect('table')}}>
+                    <img className="img_table" src={img_menu1} alt="table"/>
+                    <div><label className="label_table" htmlFor="table"> 테이블: 선택 안함 </label></div>
+                </button>
+                <button className="outlet" id="outlet" onClick={()=>{setSelect('plug')}}>
+                    <img className="img_outlet" src={img_menu2} alt="outlet"/>
+                    <div><label className="label_outlet" htmlFor="outlet"> 콘센트: 선택 안함 </label></div>
+                </button>
+                <button className="search">
+                    <img className="img_search" src={img_search} alt="search"/>
+                </button>
+            </div>
         </Map>
 
+        {select === 'table'?
+            <PopUp state={'table'} getState={getState}/>
+            :
+            <>
+            {select === 'plug'?
+                <PopUp state={'plug'} getState={getState}/>
+                :
+                null
+            }
+            </>
+        }
     </>
 }
 
@@ -157,7 +191,7 @@ const PlugButton = styled.div`
   right: 20px;
   top: 20px;
   background: ${props=>props.bg};
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 10px;
   z-index : 2;
   
@@ -189,10 +223,11 @@ const FocusButton = styled.div`
   bottom: 200px;
 
   background: #FFFFFF;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 10px;
   z-index : 2;
 
   display : flex;
   justify-content: center;
 `
+
