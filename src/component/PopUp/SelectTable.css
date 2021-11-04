@@ -3,7 +3,8 @@
     height: 70px;
     margin-left : 40px;
     margin-top: 10px;
-    
+    display: flex;
+
     background: #FFFFFF;
     border: 3px solid #C4C4C4;
     box-sizing: border-box;
@@ -11,10 +12,12 @@
 
 }
 .doubletable {
+    position: relative;
     width: 310px;
     height: 70px;
     margin-left : 40px;
     margin-top: 10px;
+    display: flex;
     
     background: #FFFFFF;
     border: 3px solid #C4C4C4;
@@ -26,6 +29,7 @@
     height: 70px;
     margin-left : 40px;
     margin-top: 10px;
+    display: flex;
     
     background: #FFFFFF;
     border: 3px solid #C4C4C4;
@@ -37,6 +41,7 @@
     height: 70px;
     margin-left : 40px;
     margin-top: 10px;
+    display: flex;
     
     background: #FFFFFF;
     border: 3px solid #C4C4C4;
@@ -46,13 +51,76 @@
 .img_singletable {
     width: 40px;
     height: 40px;
-    margin-top: 10px;
+    margin: auto;
+    
+}
+.img_doubletable1 {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    margin-top: 13px;
+    margin-left: 15px;
+}
+.img_doubletable2 {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    margin-top: 21px;
+    right: 14px;
+}
+.img_bartable {
+    width: 40px;
+    height: 40px;
+    margin: auto;
+}
+.img_anything {
+    width: 40px;
+    height: 40px;
+    margin: auto;
 }
 .label_singletable {
     width: 183px;
     height: 28px;
-    margin-left: 30px;
+    margin: auto;
     
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    line-height: 28px;
+
+    color: #000000;
+}
+.label_doubletable {
+    width: 183px;
+    height: 28px;
+    margin: auto;
+    
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    line-height: 28px;
+
+    color: #000000;
+}
+.label_bartable {
+    width: 183px;
+    height: 28px;
+    margin: auto;
+
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    line-height: 28px;
+
+    color: #000000;
+}
+.label_anything {
+    width: 183px;
+    height: 28px;
+    margin: auto;
 
     font-family: Roboto;
     font-style: normal;
