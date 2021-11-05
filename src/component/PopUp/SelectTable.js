@@ -7,20 +7,22 @@ import img_anything from "../../img/img_anything.png";
 export const SelectTable = () => {
   const [currentClick, setCurrentClick] = useState(null);
   const [prevClick, setPrevClick] = useState(null);
-
+  let storage = localStorage;
+  
   const GetClick = (e) => {
   setCurrentClick(e);
   };
+
 
   useEffect(
     (e) => {
       if (currentClick !== null) {
         let currentbtn = document.querySelector(`#${currentClick}`);
         let currentlabel = document.querySelector(`label[id=${currentClick}]`);
+        storage.setItem('table', currentClick)
         currentbtn.style.border = "3px solid #4AD395";
         currentlabel.style.color = "#4AD395";
-       }
-
+      }
       if (prevClick !== null) {
         let prevbtn = document.querySelector(`#${prevClick}`);
         let prevlabel = document.querySelector(`label[id=${prevClick}]`)
@@ -31,11 +33,11 @@ export const SelectTable = () => {
     },
     [currentClick]
   );
-
+  
     return <>
           <button className="singletable" id="singletable" onClick={() => GetClick('singletable')}>
             <img className="img_singletable" src={img_menu1} alt="singletable"/>
-            <label className="label_singletable" id="singletable" htmlFor="table"> 싱글 테이블(1~2인) </label>
+            <label className="label_singletable" id="singletable" htmlFor="table"> 싱글테이블(1~2인) </label>
           </button>
           <button className="doubletable" id="doubletable" onClick={() => GetClick('doubletable')}>
             <img className="img_doubletable1" src={img_menu1} alt="doubletable"/>
@@ -50,6 +52,7 @@ export const SelectTable = () => {
             <img className="img_anything" src={img_anything} alt="anything"/>
             <label className="label_anything" id="anything" htmlFor="table"> 상관 없어요! </label>
           </button>
+          
           
     </>
 }
