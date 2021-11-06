@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import styled from "styled-components";
-import '../component/MainPage/Button.css'
+import '../component/MainPage/Button.css';
 import img_plug from "../img/img_plug.svg";
 import img_plug_white from "../img/img_plug_white.svg";
 import img_focus from "../img/img_focus.svg";
@@ -8,6 +8,7 @@ import img_focus_green from "../img/img_focus_green.svg";
 import img_menu1 from "../img/img_menu1.png";
 import img_menu2 from "../img/img_menu2.png";
 import img_search from "../img/img_search.png";
+import currentLocation from "../img/currentLocation.svg";
 import {PopUp} from "../component/PopUp/PopUp";
 
 /*global kakao*/
@@ -56,10 +57,18 @@ export const MainPage = () => {
         map = new kakao.maps.Map(container, options);
 
         function displayMyLocate(locPosition) {
+            let imageSrc = 'https://user-images.githubusercontent.com/54919662/140506553-d8210702-d80a-4348-97bd-1ed9df1eb937.png', // 마커이미지의 주소입니다
+                imageSize = new kakao.maps.Size(42, 42), // 마커이미지의 크기입니다
+                imageOption = {offset: new kakao.maps.Point(20, 20)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+
+            let markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption),
+                markerPosition = new kakao.maps.LatLng(37.54699, 127.09598); // 마커가 표시될 위치입니다
+
             // 마커를 생성합니다.
             new kakao.maps.Marker({
                 map: map,
-                position: locPosition
+                position: locPosition,
+                image : markerImage,
             });
 
             map.setCenter(locPosition);
