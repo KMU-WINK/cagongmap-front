@@ -8,13 +8,13 @@ import img_focus_green from "../img/img_focus_green.svg";
 import img_menu1 from "../img/img_menu1.png";
 import img_menu2 from "../img/img_menu2.png";
 import img_search from "../img/img_search.png";
-import currentLocation from "../img/currentLocation.svg";
 import {PopUp} from "../component/PopUp/PopUp";
 
 /*global kakao*/
 
 const markers = []
-const result = []
+const resultMarker = []
+const resultOverlay = []
 let map;
 
 export const MainPage = () => {
@@ -104,25 +104,55 @@ export const MainPage = () => {
 
         function displayMarker(place) {
             // 마커를 생성하고 지도에 표시합니다
+            let position = new kakao.maps.LatLng(place.y, place.x);
+
+            let imageSrc = 'https://user-images.githubusercontent.com/54919662/140638676-3e057f62-9685-43c1-a97b-8b982621a1cc.png', // 마커이미지의 주소입니다
+                imageSize = new kakao.maps.Size(36, 36), // 마커이미지의 크기입니다
+                imageOption = {offset: new kakao.maps.Point(18, 30)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+
+            let markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption),
+                markerPosition = new kakao.maps.LatLng(37.54699, 127.09598); // 마커가 표시될 위치입니다
+
+            // 마커를 생성합니다.
+
             let marker = new kakao.maps.Marker({
                 map: map,
-                position: new kakao.maps.LatLng(place.y, place.x)
+                position: position,
+                image : markerImage,
             });
 
-            result.push(marker)
+            resultMarker.push(marker)
+
             // 마커에 클릭이벤트를 등록
             kakao.maps.event.addListener(marker, 'click', function () {
                 // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
                 infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
                 infowindow.open(map, marker);
             });
+
+            let content = '<div class="customoverlay">' +
+                '    <span class="title">10</span>' +
+                '</div>';
+
+
+            // 커스텀 오버레이를 생성합니다
+            let customOverlay = new kakao.maps.CustomOverlay({
+                map: map,
+                position: position,
+                content: content,
+                yAnchor: 1
+            });
+
+            resultOverlay.push(customOverlay)
         }
 
         function removeMarker() {
-            for ( let i = 0; i < result.length; i++ ) {
-                result[i].setMap(null);
+            for ( let i = 0; i < resultMarker.length; i++ ) {
+                resultMarker[i].setMap(null);
+                resultOverlay[i].setMap(null);
             }
-            result.pop()
+            resultMarker.pop()
+            resultOverlay.pop()
         }
     }
 

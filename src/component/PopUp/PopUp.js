@@ -29,7 +29,9 @@ export const PopUp = ({state, getState}) => {
                     }
                 </Wrap>
 
-                <ConfirmBtn onClick={()=>getState('')}>선택하기</ConfirmBtn>
+                <ButtonDiv>
+                    <ConfirmBtn onClick={()=>getState('')}>선택하기</ConfirmBtn>
+                </ButtonDiv>
             </Modal>
         </OpacityView>
     </>
@@ -71,13 +73,20 @@ const CloseIcon = styled.img.attrs({
   //z-index : 20;
 `
 
-const ConfirmBtn = styled.div`
+const ButtonDiv = styled.div`
+  display : flex;
+  justify-items: center;
+  margin : auto;
+  
+`
+
+const ConfirmBtn = styled.button`
   width: 310px;
   height: 60px;
   margin : 40px auto auto auto;
   background: #4AD395;
   border-radius: 10px;
-
+  border : none;
   font-family: Roboto;
   font-style: normal;
   font-weight: normal;
