@@ -5,11 +5,22 @@
     margin-top: 10px;
     display: flex;
 
-    background: #FFFFFF;
+    background: #ffffff;
     border: 3px solid #C4C4C4;
     box-sizing: border-box;
     border-radius: 20px;
+}
+.singletable:hover {
+    width: 310px;
+    height: 70px;
+    margin-left : 40px;
+    margin-top: 10px;
+    display: flex;
 
+    background: #ffffff;
+    border: 3px solid #4AD395;
+    box-sizing: border-box;
+    border-radius: 20px;
 }
 .doubletable {
     position: relative;
