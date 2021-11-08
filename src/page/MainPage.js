@@ -99,7 +99,7 @@ export const MainPage = () => {
         let ps = new kakao.maps.services.Places(map);
 
         // 카테고리로 카페 검색
-       ps.categorySearch('CE7', placesSearchCB, {useMapBounds: true});
+        ps.categorySearch('CE7', placesSearchCB, {useMapBounds: true});
 
         // 키워드 검색 완료 시 호출되는 콜백함수
         function placesSearchCB(data, status, pagination) {
@@ -194,11 +194,11 @@ export const MainPage = () => {
             <PopUp state={'table'} getState={getState} getSearchTable={getSearchTable}/>
             :
             <>
-            {select === 'plug'?
-                <PopUp state={'plug'} getState={getState}getSearchPlug={getSearchPlug}/>
-                :
-                null
-            }
+                {select === 'plug'?
+                    <PopUp state={'plug'} getState={getState}getSearchPlug={getSearchPlug}/>
+                    :
+                    null
+                }
             </>
         }
     </>
@@ -235,7 +235,7 @@ const PlugButton = styled.div`
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 10px;
   z-index : 2;
-  
+
   display : flex;
   justify-content: center;
 `
