@@ -9,11 +9,27 @@ import img_menu1 from "../img/img_menu1.png";
 import img_menu2 from "../img/img_menu2.png";
 import img_search from "../img/img_search.png";
 import {PopUp} from "../component/PopUp/PopUp";
-
 /*global kakao*/
 
 const markers = []
 const result = []
+let storage = localStorage;
+let choosemenu = '선택 안함'
+let table = storage.getItem('table')
+if (table === 'singletable') {
+    choosemenu = '싱글'
+    localStorage.removeItem('table')
+} else if (table === 'doubletable') {
+    choosemenu = '더블'
+    localStorage.removeItem('table')
+} else if (table === 'bartable') {
+    choosemenu = '바'
+    localStorage.removeItem('table')
+} else if (table === 'anything') {
+    choosemenu = '상관X'
+    localStorage.removeItem('table')
+}
+
 let map;
 
 export const MainPage = () => {
@@ -21,13 +37,14 @@ export const MainPage = () => {
     const [focus, setFocus] = useState(false);
     const [select, setSelect] = useState('') // 어떤 팝업창을 띄울지 -> table 또는 plug, 팝업을 띄우지 않을 때는 ''
     let infowindow = new kakao.maps.InfoWindow({zIndex:1});
-
+    
     useEffect(()=>{
         myLocate();
     }, [])
 
     const getState = (state) => {
         setSelect(state);
+        window.location.replace("/main")
     }
 
     const myLocate = () => {
@@ -116,7 +133,7 @@ export const MainPage = () => {
             result.pop()
         }
     }
-
+    
     return <>
         <Map id={"map"}>
             <PlugButton bg={plug?"#4AD395":"#FFFFFF"} onClick={()=>clickPlug()}>
@@ -133,11 +150,12 @@ export const MainPage = () => {
                     <GreenFocusIcon/>
                 }
             </FocusButton>
-
+            
+            
             <div className="container_menu">
                 <button className="table" id="table" onClick={()=>{setSelect('table')}}>
                     <img className="img_table" src={img_menu1} alt="table"/>
-                    <div><label className="label_table" htmlFor="table"> 테이블: 선택 안함 </label></div>
+                    <div><label className="label_table" htmlFor="table"> 테이블: {choosemenu} </label></div>
                 </button>
                 <button className="outlet" id="outlet" onClick={()=>{setSelect('plug')}}>
                     <img className="img_outlet" src={img_menu2} alt="outlet"/>
