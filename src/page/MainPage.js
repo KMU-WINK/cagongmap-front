@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import styled from "styled-components";
-import '../component/MainPage/Button.css'
+import '../component/MainPage/Button.css';
 import img_plug from "../img/img_plug.svg";
 import img_plug_white from "../img/img_plug_white.svg";
 import img_focus from "../img/img_focus.svg";
@@ -9,42 +9,35 @@ import img_menu1 from "../img/img_menu1.png";
 import img_menu2 from "../img/img_menu2.png";
 import img_search from "../img/img_search.png";
 import {PopUp} from "../component/PopUp/PopUp";
+
 /*global kakao*/
 
 const markers = []
-const result = []
-let storage = localStorage;
-let choosemenu = '선택 안함'
-let table = storage.getItem('table')
-if (table === 'singletable') {
-    choosemenu = '싱글'
-    localStorage.removeItem('table')
-} else if (table === 'doubletable') {
-    choosemenu = '더블'
-    localStorage.removeItem('table')
-} else if (table === 'bartable') {
-    choosemenu = '바'
-    localStorage.removeItem('table')
-} else if (table === 'anything') {
-    choosemenu = '상관X'
-    localStorage.removeItem('table')
-}
-
+const resultMarker = []
+const resultOverlay = []
 let map;
 
 export const MainPage = () => {
     const [plug, setPlug] = useState(false);
     const [focus, setFocus] = useState(false);
     const [select, setSelect] = useState('') // 어떤 팝업창을 띄울지 -> table 또는 plug, 팝업을 띄우지 않을 때는 ''
-    let infowindow = new kakao.maps.InfoWindow({zIndex:1});
-    
+    const [searchTable, setSearchTable] = useState('선택 안함')
+    const [searchPlug, setSearchPlug] = useState('선택 안함')
+
     useEffect(()=>{
         myLocate();
     }, [])
 
     const getState = (state) => {
         setSelect(state);
-        window.location.replace("/main")
+    }
+
+    const getSearchTable = (searchTable) => {
+        setSearchTable(searchTable)
+    }
+
+    const getSearchPlug = (searchPlug) => {
+        setSearchPlug(searchPlug)
     }
 
     const myLocate = () => {
@@ -73,10 +66,18 @@ export const MainPage = () => {
         map = new kakao.maps.Map(container, options);
 
         function displayMyLocate(locPosition) {
+            let imageSrc = 'https://user-images.githubusercontent.com/54919662/140506553-d8210702-d80a-4348-97bd-1ed9df1eb937.png', // 마커이미지의 주소입니다
+                imageSize = new kakao.maps.Size(42, 42), // 마커이미지의 크기입니다
+                imageOption = {offset: new kakao.maps.Point(20, 20)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+
+            let markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption),
+                markerPosition = new kakao.maps.LatLng(37.54699, 127.09598); // 마커가 표시될 위치입니다
+
             // 마커를 생성합니다.
             new kakao.maps.Marker({
                 map: map,
-                position: locPosition
+                position: locPosition,
+                image : markerImage,
             });
 
             map.setCenter(locPosition);
@@ -98,7 +99,7 @@ export const MainPage = () => {
         let ps = new kakao.maps.services.Places(map);
 
         // 카테고리로 카페 검색
-       ps.categorySearch('CE7', placesSearchCB, {useMapBounds: true});
+        ps.categorySearch('CE7', placesSearchCB, {useMapBounds: true});
 
         // 키워드 검색 완료 시 호출되는 콜백함수
         function placesSearchCB(data, status, pagination) {
@@ -112,28 +113,48 @@ export const MainPage = () => {
 
         function displayMarker(place) {
             // 마커를 생성하고 지도에 표시합니다
+            let position = new kakao.maps.LatLng(place.y, place.x);
+
+            let imageSrc = 'https://user-images.githubusercontent.com/54919662/140638676-3e057f62-9685-43c1-a97b-8b982621a1cc.png', // 마커이미지의 주소입니다
+                imageSize = new kakao.maps.Size(36, 36), // 마커이미지의 크기입니다
+                imageOption = {offset: new kakao.maps.Point(18, 30)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+
+            let markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption),
+                markerPosition = new kakao.maps.LatLng(37.54699, 127.09598); // 마커가 표시될 위치입니다
+
             let marker = new kakao.maps.Marker({
                 map: map,
-                position: new kakao.maps.LatLng(place.y, place.x)
+                position: position,
+                image : markerImage,
             });
 
-            result.push(marker)
-            // 마커에 클릭이벤트를 등록
-            kakao.maps.event.addListener(marker, 'click', function () {
-                // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
-                infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
-                infowindow.open(map, marker);
+            resultMarker.push(marker)
+
+            let content = '<div class="customoverlay">' +
+                '    <span class="title">10</span>' +
+                '</div>';
+
+            // 커스텀 오버레이를 생성합니다
+            let customOverlay = new kakao.maps.CustomOverlay({
+                map: map,
+                position: position,
+                content: content,
+                yAnchor: 1
             });
+
+            resultOverlay.push(customOverlay)
         }
 
         function removeMarker() {
-            for ( let i = 0; i < result.length; i++ ) {
-                result[i].setMap(null);
+            for ( let i = 0; i < resultMarker.length; i++ ) {
+                resultMarker[i].setMap(null);
+                resultOverlay[i].setMap(null);
             }
-            result.pop()
+            resultMarker.pop()
+            resultOverlay.pop()
         }
     }
-    
+
     return <>
         <Map id={"map"}>
             <PlugButton bg={plug?"#4AD395":"#FFFFFF"} onClick={()=>clickPlug()}>
@@ -150,32 +171,31 @@ export const MainPage = () => {
                     <GreenFocusIcon/>
                 }
             </FocusButton>
-            
-            
-            <div className="container_menu">
-                <button className="table" id="table" onClick={()=>{setSelect('table')}}>
+
+            <Menu>
+                <EachMenu border={searchTable==='선택 안함'?0:'#4AD395 3px solid'} margin={[10,5]} onClick={()=>{setSelect('table')}}>
                     <img className="img_table" src={img_menu1} alt="table"/>
-                    <div><label className="label_table" htmlFor="table"> 테이블: {choosemenu} </label></div>
-                </button>
-                <button className="outlet" id="outlet" onClick={()=>{setSelect('plug')}}>
+                    <MenuLabel>테이블: {searchTable}</MenuLabel>
+                </EachMenu>
+                <EachMenu border={searchPlug==='선택 안함'?0:'#4AD395 3px solid'} margin={[0,0]} onClick={()=>{setSelect('plug')}}>
                     <img className="img_outlet" src={img_menu2} alt="outlet"/>
-                    <div><label className="label_outlet" htmlFor="outlet"> 콘센트: 선택 안함 </label></div>
-                </button>
-                <button className="search">
+                    <MenuLabel>콘센트: {searchPlug}</MenuLabel>
+                </EachMenu>
+                <EachMenu border={0} margin={[5,10]} >
                     <img className="img_search" src={img_search} alt="search"/>
-                </button>
-            </div>
+                </EachMenu>
+            </Menu>
         </Map>
 
         {select === 'table'?
-            <PopUp state={'table'} getState={getState}/>
+            <PopUp state={'table'} getState={getState} getSearchTable={getSearchTable}/>
             :
             <>
-            {select === 'plug'?
-                <PopUp state={'plug'} getState={getState}/>
-                :
-                null
-            }
+                {select === 'plug'?
+                    <PopUp state={'plug'} getState={getState}getSearchPlug={getSearchPlug}/>
+                    :
+                    null
+                }
             </>
         }
     </>
@@ -212,7 +232,7 @@ const PlugButton = styled.div`
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 10px;
   z-index : 2;
-  
+
   display : flex;
   justify-content: center;
 `
@@ -249,3 +269,38 @@ const FocusButton = styled.div`
   justify-content: center;
 `
 
+const Menu = styled.div`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 388px;
+  width : 90%;
+  height: 140px;
+  bottom: 50px;
+  background: rgba(238, 238, 238, 0.92);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  display : flex;
+  justify-content: space-around;
+  align-items : center;
+  z-index : 2;
+`
+
+const EachMenu = styled.button`
+  width: 110px;
+  height: 110px;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 10px;
+  z-index : 2;
+  margin-left : ${props=>props.margin[0]}px;
+  margin-right : ${props=>props.margin[1]}px;
+  border: ${props=>props.border};
+`
+
+const MenuLabel = styled.div`
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 16px;
+  color: #000000;
+`

@@ -4,8 +4,19 @@ import { SelectTable } from "./SelectTable";
 import {SelectPlug} from "./SelectPlug";
 import {useState} from "react";
 
-export const PopUp = ({state, getState}) => {
-    const [type, setType] = useState(state)
+export const PopUp = ({state, getState, getSearchTable, getSearchPlug}) => {
+    const [value, setValue] = useState(0)
+
+    const getValue = (value) => {
+        setValue(value);
+        if (state === 'table') getSearchTable(value);
+        else if (state === 'plug') getSearchPlug(value+'개 이상');
+    }
+
+    const clickSelect = () => {
+        if (value !== 0) getState('')
+    }
+
     return <>
         <OpacityView>
             <Modal>
@@ -14,14 +25,14 @@ export const PopUp = ({state, getState}) => {
                 </CloseDiv>
 
                 <Wrap>
-                    {type === 'table'?
+                    {state === 'table'?
                         <>
-                            <SelectTable/>
+                            <SelectTable value={0} getValue={getValue}/>
                         </>
                         :
                         <>
-                        {type === 'plug'?
-                            <SelectPlug/>
+                        {state === 'plug'?
+                            <SelectPlug value={0} getValue={getValue}/>
                             :
                             null
                         }
@@ -29,7 +40,9 @@ export const PopUp = ({state, getState}) => {
                     }
                 </Wrap>
 
-                <ConfirmBtn onClick={()=>getState('')}>선택하기</ConfirmBtn>
+                <ButtonDiv>
+                    <ConfirmBtn color={value===0?['#C4C4C4','#FFF','#C4C4C4']:['#4AD395','#4AD395','#FFF']} onClick={()=>clickSelect()}>선택하기</ConfirmBtn>
+                </ButtonDiv>
             </Modal>
         </OpacityView>
     </>
@@ -71,13 +84,20 @@ const CloseIcon = styled.img.attrs({
   //z-index : 20;
 `
 
-const ConfirmBtn = styled.div`
+const ButtonDiv = styled.div`
+  display : flex;
+  justify-items: center;
+  margin : auto;
+  
+`
+
+const ConfirmBtn = styled.button`
   width: 310px;
   height: 60px;
   margin : 40px auto auto auto;
-  background: #4AD395;
+  background: ${props=>props.color[1]};
   border-radius: 10px;
-
+  border : ${props=>props.color[0]} 3px solid;
   font-family: Roboto;
   font-style: normal;
   font-weight: normal;
@@ -85,7 +105,7 @@ const ConfirmBtn = styled.div`
   line-height: 60px;
   text-align : center;
   
-  color: #FFFFFF;
+  color: ${props=>props.color[2]};
 
 `
 
