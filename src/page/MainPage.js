@@ -122,8 +122,6 @@ export const MainPage = () => {
             let markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption),
                 markerPosition = new kakao.maps.LatLng(37.54699, 127.09598); // 마커가 표시될 위치입니다
 
-            // 마커를 생성합니다.
-
             let marker = new kakao.maps.Marker({
                 map: map,
                 position: position,
@@ -135,7 +133,6 @@ export const MainPage = () => {
             let content = '<div class="customoverlay">' +
                 '    <span class="title">10</span>' +
                 '</div>';
-
 
             // 커스텀 오버레이를 생성합니다
             let customOverlay = new kakao.maps.CustomOverlay({

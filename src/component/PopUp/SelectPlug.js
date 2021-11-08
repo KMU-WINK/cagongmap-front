@@ -65,6 +65,10 @@ const PlugSelect = styled.button`
   margin-top: 30px;
   margin-left: 20px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  :hover {
+    color: #4AD395;
+    border: 3px solid #4AD395;
+  }
 `
 const ButtonBox = styled.div`
     margin-left: 19px;
