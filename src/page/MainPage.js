@@ -21,7 +21,8 @@ export const MainPage = () => {
     const [plug, setPlug] = useState(false);
     const [focus, setFocus] = useState(false);
     const [select, setSelect] = useState('') // 어떤 팝업창을 띄울지 -> table 또는 plug, 팝업을 띄우지 않을 때는 ''
-    let infowindow = new kakao.maps.InfoWindow({zIndex:1});
+    const [searchTable, setSearchTable] = useState('선택 안함')
+    const [searchPlug, setSearchPlug] = useState('선택 안함')
 
     useEffect(()=>{
         myLocate();
@@ -29,6 +30,14 @@ export const MainPage = () => {
 
     const getState = (state) => {
         setSelect(state);
+    }
+
+    const getSearchTable = (searchTable) => {
+        setSearchTable(searchTable)
+    }
+
+    const getSearchPlug = (searchPlug) => {
+        setSearchPlug(searchPlug)
     }
 
     const myLocate = () => {
@@ -123,13 +132,6 @@ export const MainPage = () => {
 
             resultMarker.push(marker)
 
-            // 마커에 클릭이벤트를 등록
-            kakao.maps.event.addListener(marker, 'click', function () {
-                // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
-                infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
-                infowindow.open(map, marker);
-            });
-
             let content = '<div class="customoverlay">' +
                 '    <span class="title">10</span>' +
                 '</div>';
@@ -173,27 +175,27 @@ export const MainPage = () => {
                 }
             </FocusButton>
 
-            <div className="container_menu">
-                <button className="table" id="table" onClick={()=>{setSelect('table')}}>
+            <Menu>
+                <EachMenu border={searchTable==='선택 안함'?0:'#4AD395 3px solid'} margin={[10,5]} onClick={()=>{setSelect('table')}}>
                     <img className="img_table" src={img_menu1} alt="table"/>
-                    <div><label className="label_table" htmlFor="table"> 테이블: 선택 안함 </label></div>
-                </button>
-                <button className="outlet" id="outlet" onClick={()=>{setSelect('plug')}}>
+                    <MenuLabel>테이블: {searchTable}</MenuLabel>
+                </EachMenu>
+                <EachMenu border={searchPlug==='선택 안함'?0:'#4AD395 3px solid'} margin={[0,0]} onClick={()=>{setSelect('plug')}}>
                     <img className="img_outlet" src={img_menu2} alt="outlet"/>
-                    <div><label className="label_outlet" htmlFor="outlet"> 콘센트: 선택 안함 </label></div>
-                </button>
-                <button className="search">
+                    <MenuLabel>콘센트: {searchPlug}</MenuLabel>
+                </EachMenu>
+                <EachMenu border={0} margin={[5,10]} >
                     <img className="img_search" src={img_search} alt="search"/>
-                </button>
-            </div>
+                </EachMenu>
+            </Menu>
         </Map>
 
         {select === 'table'?
-            <PopUp state={'table'} getState={getState}/>
+            <PopUp state={'table'} getState={getState} getSearchTable={getSearchTable}/>
             :
             <>
             {select === 'plug'?
-                <PopUp state={'plug'} getState={getState}/>
+                <PopUp state={'plug'} getState={getState}getSearchPlug={getSearchPlug}/>
                 :
                 null
             }
@@ -270,3 +272,38 @@ const FocusButton = styled.div`
   justify-content: center;
 `
 
+const Menu = styled.div`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 388px;
+  width : 90%;
+  height: 140px;
+  bottom: 50px;
+  background: rgba(238, 238, 238, 0.92);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  display : flex;
+  justify-content: space-around;
+  align-items : center;
+  z-index : 2;
+`
+
+const EachMenu = styled.button`
+  width: 110px;
+  height: 110px;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 10px;
+  z-index : 2;
+  margin-left : ${props=>props.margin[0]}px;
+  margin-right : ${props=>props.margin[1]}px;
+  border: ${props=>props.border};
+`
+
+const MenuLabel = styled.div`
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 16px;
+  color: #000000;
+`
