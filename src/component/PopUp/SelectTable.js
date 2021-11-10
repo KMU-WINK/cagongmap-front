@@ -50,12 +50,12 @@ const Label = styled.div`
 `
 
 const Each = styled.button`
-  width: 310px;
+  max-width: 310px;
+  width: 90%;
   height: 70px;
-  margin-left : 40px;
-  margin-top: 10px;
+  margin : 10px auto auto auto;
   display: flex;
-
+  
   background: #FFFFFF;
   box-sizing: border-box;
   border-radius: 20px;  
