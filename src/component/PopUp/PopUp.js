@@ -9,11 +9,11 @@ export const PopUp = ({state, getState, getSearchTable, getSearchPlug}) => {
 
     const getValue = (value) => {
         setValue(value);
-        if (state === 'table') getSearchTable(value);
-        else if (state === 'plug') getSearchPlug(value+'개 이상');
     }
 
-    const clickSelect = () => {
+    const clickSelect = (value) => {
+        if (state === 'table') getSearchTable(value);
+        else if (state === 'plug') getSearchPlug(value+'개 이상');
         if (value !== 0) getState('')
     }
 
@@ -41,7 +41,7 @@ export const PopUp = ({state, getState, getSearchTable, getSearchPlug}) => {
                 </Wrap>
 
                 <ButtonDiv>
-                    <ConfirmBtn color={value===0?['#C4C4C4','#FFF','#C4C4C4']:['#4AD395','#4AD395','#FFF']} onClick={()=>clickSelect()}>선택하기</ConfirmBtn>
+                    <ConfirmBtn color={value===0?['#C4C4C4','#FFF','#C4C4C4']:['#4AD395','#4AD395','#FFF']} onClick={()=>clickSelect(value)}>선택하기</ConfirmBtn>
                 </ButtonDiv>
             </Modal>
         </OpacityView>

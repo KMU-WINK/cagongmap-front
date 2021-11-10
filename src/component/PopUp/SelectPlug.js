@@ -6,7 +6,6 @@ import "../MainPage/Button.css"
 
 export const SelectPlug = ({value, getValue}) => {
     const [buttonIndex, setButtonIndex] = useState(value);
-
     const buttonClick = (idx) => {
         setButtonIndex(idx);
         getValue(idx)

@@ -1,78 +1,69 @@
 import './SelectTable.css';
+import styled from "styled-components";
 import React, {useEffect, useState} from 'react'
 import img_menu1 from "../../img/img_menu1.png";
-import img_bartable from "../../img/img_bartable.png";
+import img_barTable from "../../img/img_bartable.png";
 import img_anything from "../../img/img_anything.png";
 
-export const SelectTable = () => {
-  const [currentClick, setCurrentClick] = useState(null);
-  const [prevClick, setPrevClick] = useState(null);
-  let storage = localStorage;
+export const SelectTable = ({value, getValue}) => {
+    const [currentClick, setCurrentClick] = useState(value);
   
-  const GetClick = (e) => {
-  setCurrentClick(e);
-  };
+    const GetClick = (val) => {
+        setCurrentClick(val);
+        getValue(val)
+      };
 
-
-  useEffect(
-    (e) => {
-      if (currentClick !== null) {
-        let currentbtn = document.querySelector(`#${currentClick}`);
-        let currentlabel = document.querySelector(`label[id=${currentClick}]`);
-        storage.setItem('table', currentClick)
-        currentbtn.style.border = "3px solid #4AD395";
-        currentlabel.style.color = "#4AD395";
-      }
-      if (prevClick !== null) {
-        let prevbtn = document.querySelector(`#${prevClick}`);
-        let prevlabel = document.querySelector(`label[id=${prevClick}]`)
-        prevbtn.style.border = "3px solid #C4C4C4";
-        prevlabel.style.color = "#000000"
-      }
-      setPrevClick(currentClick);
-    },
-    [currentClick]
-  );
-  
-  const hoverin = (e) => {
-    let currentbtn = document.querySelector(`#${e}`);
-    let currentlabel = document.querySelector(`label[id=${e}]`);
-    currentbtn.style.border = "3px solid #4AD395";
-    currentlabel.style.color = "#4AD395";
-    };
-  
-  const hoverout = (e) => {
-    if (currentClick === e) {
-      GetClick(e)
-    } else {
-      let currentbtn = document.querySelector(`#${e}`);
-      let currentlabel = document.querySelector(`label[id=${e}]`)
-      currentbtn.style.border = "3px solid #C4C4C4";
-      currentlabel.style.color = "#000000"
-    }
-
+    const activeHandler = (val) => {
+        return val === currentClick;
     };
 
     return <>
-          <button className="singletable" id="singletable" onMouseOver={() => hoverin('singletable')} onMouseOut={() => hoverout('singletable')} onClick={() => GetClick('singletable')}>
-            <img className="img_singletable" src={img_menu1} alt="singletable"/>
-            <label className="label_singletable" id="singletable" htmlFor="table"> 싱글테이블(1~2인) </label>
-          </button>
-          <button className="doubletable" id="doubletable" onMouseOver={() => hoverin('doubletable')} onMouseOut={() => hoverout('doubletable')} onClick={() => GetClick('doubletable')}>
-            <img className="img_doubletable1" src={img_menu1} alt="doubletable"/>
-            <img className="img_doubletable2" src={img_menu1} alt="doubletable"/>
-            <label className="label_doubletable" id="doubletable" htmlFor="table"> 더블테이블(1~4인) </label>
-          </button>
-          <button className="bartable" id="bartable" onMouseOver={() => hoverin('bartable')} onMouseOut={() => hoverout('bartable')} onClick={() => GetClick('bartable')}>
-            <img className="img_bartable" src={img_bartable} alt="bartable"/>
-            <label className="label_bartable" id="bartable" htmlFor="table"> 바 테이블(n인) </label>
-          </button>
-          <button className="anything" id="anything" onMouseOver={() => hoverin('anything')} onMouseOut={() => hoverout('anything')} onClick={() => GetClick('anything')}>
-            <img className="img_anything" src={img_anything} alt="anything"/>
-            <label className="label_anything" id="anything" htmlFor="table"> 상관 없어요! </label>
-          </button>
-          
-          
+          <Each onClick={() => GetClick('싱글')} active={activeHandler('싱글')}>
+              <img className="img_singletable" src={img_menu1} alt="singletable"/>
+              <Label active={activeHandler('싱글')}> 싱글테이블(1~2인) </Label>
+          </Each>
+          <Each onClick={() => GetClick('더블')} active={activeHandler('더블')}>
+              <img className="img_doubletable1" src={img_menu1} alt="doubletable"/>
+              <img className="img_doubletable2" src={img_menu1} alt="doubletable"/>
+              <Label active={activeHandler('더블')}> 더블테이블(1~4인) </Label>
+          </Each>
+          <Each onClick={() => GetClick('바')} active={activeHandler('바')}>
+              <img className="img_bartable" src={img_barTable} alt="bartable"/>
+              <Label active={activeHandler('바')}> 바 테이블(n인) </Label>
+          </Each>
+          <Each onClick={() => GetClick('상관 없음')} active={activeHandler('상관 없음')}>
+              <img className="img_anything" src={img_anything} alt="anything"/>
+              <Label active2={activeHandler('상관 없음')}> 상관 없어요! </Label>
+          </Each>
     </>
 }
 
+const Label = styled.div`
+  width: 183px;
+  height: 28px;
+  margin: auto;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 28px;
+`
+
+const Each = styled.button`
+  width: 310px;
+  height: 70px;
+  margin-left : 40px;
+  margin-top: 10px;
+  display: flex;
+
+  background: #FFFFFF;
+  box-sizing: border-box;
+  border-radius: 20px;  
+  border: ${props => (props.active ? "3px solid #4AD395" : "3px solid #C4C4C4")};
+  color: ${props => (props.active ? "#4AD395" : "#C4C4C4")};
+  
+  :hover {
+    color: #4AD395;
+    border: 3px solid #4AD395;
+  }
+`
