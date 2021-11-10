@@ -9,11 +9,11 @@ export const PopUp = ({state, getState, getSearchTable, getSearchPlug}) => {
 
     const getValue = (value) => {
         setValue(value);
-        if (state === 'table') getSearchTable(value);
-        else if (state === 'plug') getSearchPlug(value+'개 이상');
     }
 
-    const clickSelect = () => {
+    const clickSelect = (value) => {
+        if (state === 'table') getSearchTable(value);
+        else if (state === 'plug') getSearchPlug(value+'개 이상');
         if (value !== 0) getState('')
     }
 
@@ -22,6 +22,7 @@ export const PopUp = ({state, getState, getSearchTable, getSearchPlug}) => {
             <Modal>
                 <CloseDiv>
                     <CloseIcon onClick={()=>getState('')}/>
+                    {/*<CloseIcon2 src={img_closeBtn}/>*/}
                 </CloseDiv>
 
                 <Wrap>
@@ -41,7 +42,7 @@ export const PopUp = ({state, getState, getSearchTable, getSearchPlug}) => {
                 </Wrap>
 
                 <ButtonDiv>
-                    <ConfirmBtn color={value===0?['#C4C4C4','#FFF','#C4C4C4']:['#4AD395','#4AD395','#FFF']} onClick={()=>clickSelect()}>선택하기</ConfirmBtn>
+                    <ConfirmBtn color={value===0?['#C4C4C4','#FFF','#C4C4C4']:['#4AD395','#4AD395','#FFF']} onClick={()=>clickSelect(value)}>선택하기</ConfirmBtn>
                 </ButtonDiv>
             </Modal>
         </OpacityView>
@@ -62,7 +63,8 @@ const OpacityView = styled.div`
 `
 
 const Modal = styled.div`
-  width: 388px;
+  width : 90%;
+  max-width: 388px;
   height: 500px;
   margin : auto;
   background: #ffffff;
@@ -70,10 +72,9 @@ const Modal = styled.div`
   z-index : 5;
 `
 const CloseDiv = styled.div`
-  //display : flex;
   margin-top : 20px;
-  margin-left : 348px;
-  //z-index : 10;
+  display : flex;
+  justify-content: flex-end;
 `
 
 const CloseIcon = styled.img.attrs({
@@ -81,7 +82,7 @@ const CloseIcon = styled.img.attrs({
 })`
   width: 20px;
   height: 20px;
-  //z-index : 20;
+  margin-right : 20px;
 `
 
 const ButtonDiv = styled.div`
@@ -92,9 +93,10 @@ const ButtonDiv = styled.div`
 `
 
 const ConfirmBtn = styled.button`
-  width: 310px;
+  width : 90%;
+  max-width: 310px;
   height: 60px;
-  margin : 40px auto auto auto;
+  margin : 40px auto 34px auto;
   background: ${props=>props.color[1]};
   border-radius: 10px;
   border : ${props=>props.color[0]} 3px solid;

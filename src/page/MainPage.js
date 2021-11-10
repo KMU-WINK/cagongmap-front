@@ -8,6 +8,7 @@ import img_focus_green from "../img/img_focus_green.svg";
 import img_menu1 from "../img/img_menu1.png";
 import img_menu2 from "../img/img_menu2.png";
 import img_search from "../img/img_search.png";
+import img_search_active from "../img/img_search_active.png";
 import {PopUp} from "../component/PopUp/PopUp";
 
 /*global kakao*/
@@ -173,16 +174,20 @@ export const MainPage = () => {
             </FocusButton>
 
             <Menu>
-                <EachMenu border={searchTable==='선택 안함'?0:'#4AD395 3px solid'} margin={[10,5]} onClick={()=>{setSelect('table')}}>
+                <EachMenu border={searchTable==='선택 안함'?0:'#4AD395 3px solid'} margin={[10,5]} onClick={()=>{setSelect('table')}} background={false}>
                     <img className="img_table" src={img_menu1} alt="table"/>
                     <MenuLabel>테이블: {searchTable}</MenuLabel>
                 </EachMenu>
-                <EachMenu border={searchPlug==='선택 안함'?0:'#4AD395 3px solid'} margin={[0,0]} onClick={()=>{setSelect('plug')}}>
+                <EachMenu border={searchPlug==='선택 안함'?0:'#4AD395 3px solid'} margin={[0,0]} onClick={()=>{setSelect('plug')}} background={false}>
                     <img className="img_outlet" src={img_menu2} alt="outlet"/>
                     <MenuLabel>콘센트: {searchPlug}</MenuLabel>
                 </EachMenu>
-                <EachMenu border={0} margin={[5,10]} >
-                    <img className="img_search" src={img_search} alt="search"/>
+                <EachMenu border={0} margin={[5,10]} background={!(searchTable === '선택 안함' || searchPlug === '선택 안함')}>
+                    {!(searchTable === '선택 안함' || searchPlug === '선택 안함')?
+                        <img className="img_search" src={img_search_active} alt="search"/>
+                        :
+                        <img className="img_search" src={img_search} alt="search"/>
+                    }
                 </EachMenu>
             </Menu>
         </Map>
@@ -192,7 +197,7 @@ export const MainPage = () => {
             :
             <>
                 {select === 'plug'?
-                    <PopUp state={'plug'} getState={getState}getSearchPlug={getSearchPlug}/>
+                    <PopUp state={'plug'} getState={getState} getSearchPlug={getSearchPlug}/>
                     :
                     null
                 }
@@ -289,7 +294,7 @@ const Menu = styled.div`
 const EachMenu = styled.button`
   width: 110px;
   height: 110px;
-  background: rgba(255, 255, 255, 0.92);
+  background: ${props=>props.background? '#4AD395':'rgba(255, 255, 255, 0.92)'};
   border-radius: 10px;
   z-index : 2;
   margin-left : ${props=>props.margin[0]}px;
