@@ -34,9 +34,9 @@ export const Result = () => {
     return <>
         <Wrap>
             <TableText>테이블</TableText>
-            <List row={3}>
+            <List>
                 {dummy.result.map((data) =>
-                    <EachResult active={data.active} img={data.img} table={data.table} plug={data.plug} count={data.count}/>
+                    <EachResult key={data.img} active={data.active} img={data.img} table={data.table} plug={data.plug} count={data.count}/>
                 )}
             </List>
         </Wrap>
@@ -44,7 +44,7 @@ export const Result = () => {
 }
 
 const Wrap = styled.div`
-  width : 90%;
+  width : 70%;
   margin : 30px auto auto auto;
 `
 
@@ -60,7 +60,8 @@ const TableText = styled.div`
 
 const List = styled.div`
   display : grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, auto));
+  grid-template-columns: repeat(auto-fill, minmax(110px, auto));
   row-gap: 50px;
   column-gap: 20px;
+  margin-bottom : 100px;
 `

@@ -11,8 +11,8 @@ export const EachResult = (props) => {
     </Each>
 }
 const Each = styled.div`
-  width : 100px;
-  height : 100px;
+  width : 110px;
+  height : 110px;
   margin: auto;
 `
 
@@ -27,7 +27,7 @@ const Box = styled.div`
 `
 
 const Center = styled.div`
-  margin-top : 16px;
+  margin-top : 20px;
   margin-bottom : 10px;
   display : flex;
   justify-content: center;
