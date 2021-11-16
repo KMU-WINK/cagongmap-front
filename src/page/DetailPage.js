@@ -11,7 +11,7 @@ export const DetailPage = () => {
         <MobileView>
             {/*<div>DetailPage입니다Mobile</div>*/}
             <BackBtn/>
-            <ImageCarousel/>
+            <ImageCarousel mode={"m"}/>
             <PlaceInfo/>
             <ResultText/>
             <Result/>
@@ -21,7 +21,7 @@ export const DetailPage = () => {
             {/*<div>DetailPage입니다Web</div>*/}
             <Header/>
             <PlaceInfo/>
-            <ImageCarousel/>
+            <ImageCarousel mode={"w"}/>
             <ResultText/>
             <Result/>
         </BrowserView>
