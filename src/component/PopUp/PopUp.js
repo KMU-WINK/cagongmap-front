@@ -4,24 +4,36 @@ import { SelectTable } from "./SelectTable";
 import {SelectPlug} from "./SelectPlug";
 import {useState} from "react";
 
-export const PopUp = ({state, getState}) => {
-    const [type, setType] = useState(state)
+export const PopUp = ({state, getState, getSearchTable, getSearchPlug}) => {
+    const [value, setValue] = useState(0)
+
+    const getValue = (value) => {
+        setValue(value);
+    }
+
+    const clickSelect = (value) => {
+        if (state === 'table') getSearchTable(value);
+        else if (state === 'plug') getSearchPlug(value+'개 이상');
+        if (value !== 0) getState('')
+    }
+
     return <>
         <OpacityView>
             <Modal>
                 <CloseDiv>
                     <CloseIcon onClick={()=>getState('')}/>
+                    {/*<CloseIcon2 src={img_closeBtn}/>*/}
                 </CloseDiv>
 
                 <Wrap>
-                    {type === 'table'?
+                    {state === 'table'?
                         <>
-                            <SelectTable/>
+                            <SelectTable value={0} getValue={getValue}/>
                         </>
                         :
                         <>
-                        {type === 'plug'?
-                            <SelectPlug/>
+                        {state === 'plug'?
+                            <SelectPlug value={0} getValue={getValue}/>
                             :
                             null
                         }
@@ -29,7 +41,9 @@ export const PopUp = ({state, getState}) => {
                     }
                 </Wrap>
 
-                <ConfirmBtn onClick={()=>getState('')}>선택하기</ConfirmBtn>
+                <ButtonDiv>
+                    <ConfirmBtn color={value===0?['#C4C4C4','#FFF','#C4C4C4']:['#4AD395','#4AD395','#FFF']} onClick={()=>clickSelect(value)}>선택하기</ConfirmBtn>
+                </ButtonDiv>
             </Modal>
         </OpacityView>
     </>
@@ -49,7 +63,8 @@ const OpacityView = styled.div`
 `
 
 const Modal = styled.div`
-  width: 388px;
+  width : 90%;
+  max-width: 388px;
   height: 500px;
   margin : auto;
   background: #ffffff;
@@ -57,10 +72,9 @@ const Modal = styled.div`
   z-index : 5;
 `
 const CloseDiv = styled.div`
-  //display : flex;
   margin-top : 20px;
-  margin-left : 348px;
-  //z-index : 10;
+  display : flex;
+  justify-content: flex-end;
 `
 
 const CloseIcon = styled.img.attrs({
@@ -68,16 +82,24 @@ const CloseIcon = styled.img.attrs({
 })`
   width: 20px;
   height: 20px;
-  //z-index : 20;
+  margin-right : 20px;
 `
 
-const ConfirmBtn = styled.div`
-  width: 310px;
-  height: 60px;
-  margin : 40px auto auto auto;
-  background: #4AD395;
-  border-radius: 10px;
+const ButtonDiv = styled.div`
+  display : flex;
+  justify-items: center;
+  margin : auto;
+  
+`
 
+const ConfirmBtn = styled.button`
+  width : 90%;
+  max-width: 310px;
+  height: 60px;
+  margin : 40px auto 34px auto;
+  background: ${props=>props.color[1]};
+  border-radius: 10px;
+  border : ${props=>props.color[0]} 3px solid;
   font-family: Roboto;
   font-style: normal;
   font-weight: normal;
@@ -85,7 +107,7 @@ const ConfirmBtn = styled.div`
   line-height: 60px;
   text-align : center;
   
-  color: #FFFFFF;
+  color: ${props=>props.color[2]};
 
 `
 
