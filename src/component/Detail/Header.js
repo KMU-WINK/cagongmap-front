@@ -3,27 +3,31 @@ import img_plug from "../../img/img_plug.svg";
 
 export const Header = () => {
     return <>
+    <Headercontainer>
         <PlugIcon/>
         <HeaderLabel>CAGONG-MAP</HeaderLabel>
+    </Headercontainer>
     </>
 }
 
+const Headercontainer = styled.div`
+    display:flex;
+    justify-content: flex-start;
+`
 const PlugIcon = styled.img.attrs({
     src : img_plug
 })`
-    position: absolute;
     width: 50px;
     height: 50px;
-    left: 231px;
-    top: 25px;
+    margin-left: 231px;
+    margin-top: 25px;
 `
 const HeaderLabel = styled.div`
-    position: absolute;
     width: 198px;
     height: 35px;
-    left: 301px;
-    top: 32px;
-
+    margin-left: 20px;
+    margin-top: 32px;
+    
     font-family: Roboto;
     font-style: normal;
     font-weight: 500;
