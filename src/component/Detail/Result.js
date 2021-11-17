@@ -13,7 +13,7 @@ import bar_1 from '../../img/type/bar_1.svg';
 import bar_2 from '../../img/type/bar_2.svg';
 import bar_3 from '../../img/type/bar_3.svg';
 
-export const Result = () => {
+export const Result = (props) => {
     const dummy = {
         "result" : [
             {img : single_1, table: '싱글', plug: 1, count: 3, active: true},
@@ -32,7 +32,7 @@ export const Result = () => {
     }
 
     return <>
-        <Wrap>
+        <Wrap mode={props.mode}>
             <TableText>테이블</TableText>
             <List>
                 {dummy.result.map((data) =>
@@ -44,8 +44,8 @@ export const Result = () => {
 }
 
 const Wrap = styled.div`
-  width : 70%;
-  margin : 30px auto auto auto;
+  width : ${props=>props.mode==="m"? "91%":"70%"};
+  margin : 50px auto auto auto;
 `
 
 const TableText = styled.div`
@@ -56,6 +56,7 @@ const TableText = styled.div`
   line-height: 28px;
   color: #000000;
   margin-bottom : 30px;
+  margin-left : 5px;
 `
 
 const List = styled.div`

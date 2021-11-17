@@ -14,19 +14,20 @@ export const BackBtn = () => {
 
 const BackButton = styled.div`
     position: absolute;
-    width: 40px;
-    height: 40px;
-    left: 20px;
-    top: 20px;
+    width: 30px;
+    height: 30px;
+    left: 15px;
+    top: 15px;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     background: #FFFFFF;
+    z-index : 4;
 `
 const BackBtn_img = styled.img.attrs({
     src : left_arrow
 })`
-    width: 20px;
-    height: 20px;
+    width: 15px;
+    height: 15px;
 `

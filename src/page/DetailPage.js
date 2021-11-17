@@ -14,7 +14,7 @@ export const DetailPage = () => {
             <ImageCarousel mode={"m"}/>
             <PlaceInfo/>
             <ResultText/>
-            <Result/>
+            <Result mode={"m"}/>
         </MobileView>
 
         <BrowserView>
@@ -23,7 +23,7 @@ export const DetailPage = () => {
             <PlaceInfo/>
             <ImageCarousel mode={"w"}/>
             <ResultText/>
-            <Result/>
+            <Result mode={"w"}/>
         </BrowserView>
     </>
 }
