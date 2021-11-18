@@ -5,16 +5,20 @@ import {PlaceInfo} from "../component/Detail/PlaceInfo";
 import {Result} from "../component/Detail/Result";
 import {ResultText} from "../component/Detail/ResultText";
 import {Header} from "../component/Detail/Header";
+import styled from "styled-components";
 
 export const DetailPage = () => {
     return <>
         <MobileView>
             {/*<div>DetailPage입니다Mobile</div>*/}
-            <BackBtn/>
-            <ImageCarousel/>
-            <PlaceInfo/>
-            <ResultText/>
-            <Result/>
+            <Test>
+                {/*<BackBtn/>*/}
+                {/*<ImageCarousel/>*/}
+                <PlaceInfo/>
+                {/*<ResultText/>*/}
+                {/*<Result/>*/}
+            </Test>
+
         </MobileView>
 
         <BrowserView>
@@ -27,3 +31,9 @@ export const DetailPage = () => {
         </BrowserView>
     </>
 }
+const Test = styled.div`
+  width: 100%;
+  display:flex;
+  justify-content: space-between;
+  //margin:0 231px;
+`
