@@ -1,14 +1,11 @@
 import styled from "styled-components";
 import img_menu2 from "../../img/img_menu2.png";
-import styled from "styled-components";
-import img_menu2 from "../../img/img_menu2.png";
 import React, {useState} from "react";
 import "../MainPage/Button.css"
 
 
 export const SelectPlug = ({value, getValue}) => {
     const [buttonIndex, setButtonIndex] = useState(value);
-
     const buttonClick = (idx) => {
         setButtonIndex(idx);
         getValue(idx)
@@ -54,6 +51,8 @@ const PlugText = styled.div`
 const PlugSelect = styled.button`
   width: 90px;
   height: 90px;
+  min-width : 60px;
+  min-height : 60px;
   background: #FFFFFF;
   border: ${(props) => (props.active ? "3px solid #4AD395" : "3px solid #C4C4C4")};
   box-sizing: border-box;
@@ -64,10 +63,17 @@ const PlugSelect = styled.button`
   font-size: 36px;
   line-height: 42px;
   color: ${(props) => (props.active ? "#4AD395" : "#C4C4C4")};
-  margin-top: 30px;
-  margin-left: 20px;
+  //margin-top: 30px;
+  //margin-left: 20px;
+  margin : 30px 5px auto 5px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  :hover {
+    color: #4AD395;
+    border: 3px solid #4AD395;
+  }
 `
 const ButtonBox = styled.div`
-  margin-left: 19px;
+    margin: auto 40px auto 40px;
+    display : flex;
+  justify-content: space-around;
 `
