@@ -45,7 +45,7 @@ export const Result = (props) => {
 
 const Wrap = styled.div`
   width : ${props=>props.mode==="m"? "91%":"70%"};
-  margin : 50px auto auto auto;
+  margin : 30px auto auto auto;
 `
 
 const TableText = styled.div`

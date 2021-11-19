@@ -3,21 +3,13 @@ import React, {useState} from "react";
 
 export const PlaceInfo = (props) => {
     const cafename = useState("스타벅스")
-    const start = useState("AM 0900");
+    const start = useState("AM 09:00");
     const end = useState("PM 10:00");
     return <>
-        <Container>
+        <Container mode={props.mode}>
             <div>
                 <CafeName> {cafename} </CafeName>
-                {props.mode === "m" ?
-                    <div>
-                        <TimeText> {start}부터</TimeText>
-                        <TimeText>{end}까지 </TimeText>
-
-                    </div>
-                    :
-                    <TimeText> {start}부터 {end}까지 </TimeText>
-                }
+                <TimeText> {start}부터 {end}까지 </TimeText>
             </div>
             <PlaceButton>NAVER PLACE</PlaceButton>
         </Container>
@@ -25,9 +17,9 @@ export const PlaceInfo = (props) => {
 }
 
 const Container = styled.div`
-  width : 70%;
+  width : ${props=>props.mode === "m" ?'90%':'70%'};
   display : flex;
-  margin : 30px auto auto auto;
+  margin : 30px auto 30px auto;
   justify-content: space-between;
   align-items: center;
 `

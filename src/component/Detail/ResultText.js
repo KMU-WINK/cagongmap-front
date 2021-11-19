@@ -3,7 +3,7 @@ import React, {useState} from "react";
 import img_result from '../../img/img_result.svg'
 
 export const ResultText = (props) => {
-    const resultnum = useState(0);
+    const resultNum = useState(2);
 
     return <>
         <ResultBox mode={props.mode}>
@@ -11,13 +11,13 @@ export const ResultText = (props) => {
                 <>
                     <div>
                         <ResultSelect>선택한 조건에 만족하는</ResultSelect>
-                        <ResultSelect>테이블은 <Color>{resultnum}개</Color>입니다.</ResultSelect>
+                        <ResultSelect>테이블은 <Color>{resultNum}개</Color>입니다.</ResultSelect>
                     </div>
                     <MapImg/>
                 </>
                 :
                 <>
-                    <ResultSelect>선택한 조건에 만족하는 테이블은 <Color>{resultnum}개</Color>입니다.</ResultSelect>
+                    <ResultSelect>선택한 조건에 만족하는 테이블은 <Color>{resultNum}개</Color>입니다.</ResultSelect>
                     <MapImg/>
                 </>
             }
@@ -26,13 +26,12 @@ export const ResultText = (props) => {
 }
 
 const ResultBox = styled.div`
-  width : 70%;
-  margin : 30px auto auto auto;
+  width : ${props=>props.mode==='m'?'90%':'70%'};
+  margin : 25px auto 20px auto;
   display : flex;
   justify-content: ${props=>props.mode === "m"? 'space-between':'center'};
 `
 const ResultSelect = styled.div`
-  //height: 42px;
   font-family: Roboto;
   font-style: normal;
   font-weight: normal;

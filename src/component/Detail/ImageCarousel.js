@@ -23,7 +23,7 @@ export const ImageCarousel = (props) => {
 
 
 const Center = styled.div`
-  width : ${props=>props.mode==="m"? "100%":"70%"};
+  width : ${props=>props.mode==="m"? "100%":"80%"};
   margin : auto;
 `
 

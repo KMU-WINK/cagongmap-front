@@ -1,3 +1,4 @@
+import styled from "styled-components";
 import {MobileView, BrowserView} from "react-device-detect";
 import {BackBtn} from "../component/Detail/BackBtn";
 import {ImageCarousel} from "../component/Detail/ImageCarousel";
@@ -12,7 +13,9 @@ export const DetailPage = () => {
             <BackBtn/>
             <ImageCarousel mode={"m"}/>
             <PlaceInfo mode={"m"}/>
+            <Line width={"90%"}/>
             <ResultText mode={"m"}/>
+            <Line width={"90%"}/>
             <Result mode={"m"}/>
         </MobileView>
 
@@ -21,7 +24,14 @@ export const DetailPage = () => {
             <PlaceInfo mode={"w"}/>
             <ImageCarousel mode={"w"}/>
             <ResultText mode={"w"}/>
+            <Line width={"80%"}/>
             <Result mode={"w"}/>
         </BrowserView>
     </>
 }
+
+const Line = styled.div`
+  width : ${props=>props.width};
+  margin : 15px auto auto auto;
+  border: 1px solid #C4C4C4;
+`
