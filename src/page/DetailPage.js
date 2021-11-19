@@ -1,3 +1,4 @@
+import styled from "styled-components";
 import {MobileView, BrowserView} from "react-device-detect";
 import {BackBtn} from "../component/Detail/BackBtn";
 import {ImageCarousel} from "../component/Detail/ImageCarousel";
@@ -9,21 +10,28 @@ import {Header} from "../component/Detail/Header";
 export const DetailPage = () => {
     return <>
         <MobileView>
-            {/*<div>DetailPage입니다Mobile</div>*/}
             <BackBtn/>
-            <ImageCarousel/>
-            <PlaceInfo/>
-            <ResultText/>
-            <Result/>
+            <ImageCarousel mode={"m"}/>
+            <PlaceInfo mode={"m"}/>
+            <Line width={"90%"}/>
+            <ResultText mode={"m"}/>
+            <Line width={"90%"}/>
+            <Result mode={"m"}/>
         </MobileView>
 
         <BrowserView>
-            {/*<div>DetailPage입니다Web</div>*/}
             <Header/>
-            <PlaceInfo/>
-            <ImageCarousel/>
-            <ResultText/>
-            <Result/>
+            <PlaceInfo mode={"w"}/>
+            <ImageCarousel mode={"w"}/>
+            <ResultText mode={"w"}/>
+            <Line width={"80%"}/>
+            <Result mode={"w"}/>
         </BrowserView>
     </>
 }
+
+const Line = styled.div`
+  width : ${props=>props.width};
+  margin : 15px auto auto auto;
+  border: 1px solid #C4C4C4;
+`
