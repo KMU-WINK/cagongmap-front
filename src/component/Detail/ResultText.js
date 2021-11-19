@@ -1,38 +1,59 @@
 import styled from "styled-components";
 import React, {useState} from "react";
+import img_result from '../../img/img_result.svg'
 
-export const ResultText = () => {
+export const ResultText = (props) => {
     const resultnum = useState(0);
 
     return <>
-        <ResultBox>
-            <ResultSelect>선택한 조건에 만족하는 테이블은 {resultnum}개 입니다.</ResultSelect>
+        <ResultBox mode={props.mode}>
+            {props.mode === "m"?
+                <>
+                    <div>
+                        <ResultSelect>선택한 조건에 만족하는</ResultSelect>
+                        <ResultSelect>테이블은 <Color>{resultnum}개</Color>입니다.</ResultSelect>
+                    </div>
+                    <MapImg/>
+                </>
+                :
+                <>
+                    <ResultSelect>선택한 조건에 만족하는 테이블은 <Color>{resultnum}개</Color>입니다.</ResultSelect>
+                    <MapImg/>
+                </>
+            }
         </ResultBox>
     </>
 }
 
 const ResultBox = styled.div`
-  margin:30px 231px 0 231px;
+  width : 70%;
+  margin : 30px auto auto auto;
+  display : flex;
+  justify-content: ${props=>props.mode === "m"? 'space-between':'center'};
 `
 const ResultSelect = styled.div`
-  @media (min-width:0px) and (max-width:430px)
-  { width:180px;
-  }
-  height: 42px;
-  //left: 20px;
-  //top: 412px;
+  //height: 42px;
   font-family: Roboto;
   font-style: normal;
   font-weight: normal;
   font-size: 18px;
-  line-height: 21px;
   color: #000000;
-
+  display : flex;
+  align-items: center;
 `
 
-const MapImg = styled.img`
-  width: 50px;
-  height: 50px;
-  left: 352px;
-  top: 408px;
+const Color = styled.span`
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  color: #4AD395;
+`
+
+const MapImg = styled.img.attrs({
+    src : img_result
+})`
+  width : 50px;
+  height : 50px;
+  margin-left : 50px;
 `
