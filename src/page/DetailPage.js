@@ -9,20 +9,18 @@ import {Header} from "../component/Detail/Header";
 export const DetailPage = () => {
     return <>
         <MobileView>
-            {/*<div>DetailPage입니다Mobile</div>*/}
             <BackBtn/>
             <ImageCarousel mode={"m"}/>
-            <PlaceInfo/>
-            <ResultText/>
+            <PlaceInfo mode={"m"}/>
+            <ResultText mode={"m"}/>
             <Result mode={"m"}/>
         </MobileView>
 
         <BrowserView>
-            {/*<div>DetailPage입니다Web</div>*/}
             <Header/>
-            <PlaceInfo/>
+            <PlaceInfo mode={"w"}/>
             <ImageCarousel mode={"w"}/>
-            <ResultText/>
+            <ResultText mode={"w"}/>
             <Result mode={"w"}/>
         </BrowserView>
     </>
