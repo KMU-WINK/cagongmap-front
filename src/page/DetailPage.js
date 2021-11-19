@@ -10,18 +10,18 @@ export const DetailPage = () => {
     return <>
         <MobileView>
             <BackBtn/>
-            <ImageCarousel/>
+            <ImageCarousel mode={"m"}/>
             <PlaceInfo mode={"m"}/>
             <ResultText mode={"m"}/>
-            <Result/>
+            <Result mode={"m"}/>
         </MobileView>
 
         <BrowserView>
             <Header/>
-            <PlaceInfo/>
-            <ImageCarousel/>
-            <ResultText/>
-            <Result/>
+            <PlaceInfo mode={"w"}/>
+            <ImageCarousel mode={"w"}/>
+            <ResultText mode={"w"}/>
+            <Result mode={"w"}/>
         </BrowserView>
     </>
 }
