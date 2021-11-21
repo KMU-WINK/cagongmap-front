@@ -9,6 +9,7 @@ import img_menu1 from "../img/img_menu1.png";
 import img_menu2 from "../img/img_menu2.png";
 import img_search from "../img/img_search.png";
 import img_search_active from "../img/img_search_active.png";
+import img_result from '../img/img_result.svg';
 import {PopUp} from "../component/PopUp/PopUp";
 
 /*global kakao*/
@@ -16,7 +17,9 @@ import {PopUp} from "../component/PopUp/PopUp";
 const markers = []
 const resultMarker = []
 const resultOverlay = []
+const resultClickOverlay = []
 let map;
+let clickOverlay;
 
 export const MainPage = () => {
     const [plug, setPlug] = useState(false);
@@ -24,6 +27,12 @@ export const MainPage = () => {
     const [select, setSelect] = useState('') // 어떤 팝업창을 띄울지 -> table 또는 plug, 팝업을 띄우지 않을 때는 ''
     const [searchTable, setSearchTable] = useState('선택 안함')
     const [searchPlug, setSearchPlug] = useState('선택 안함')
+    const [info, setInfo] = useState({
+        name : '스타벅스',
+        timeStart : 'AM 09:00',
+        timeEnd : 'PM 10:00',
+        img : 'https://user-images.githubusercontent.com/54919662/142676431-56e3f4a3-81d5-4391-9bd1-7b1379a8db34.png',
+    })
 
     useEffect(()=>{
         myLocate();
@@ -113,37 +122,57 @@ export const MainPage = () => {
         }
 
         function displayMarker(place) {
-            // 마커를 생성하고 지도에 표시합니다
-            let position = new kakao.maps.LatLng(place.y, place.x);
-
             let imageSrc = 'https://user-images.githubusercontent.com/54919662/140638676-3e057f62-9685-43c1-a97b-8b982621a1cc.png', // 마커이미지의 주소입니다
                 imageSize = new kakao.maps.Size(36, 36), // 마커이미지의 크기입니다
                 imageOption = {offset: new kakao.maps.Point(18, 30)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
 
             let markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption),
-                markerPosition = new kakao.maps.LatLng(37.54699, 127.09598); // 마커가 표시될 위치입니다
+                markerPosition = new kakao.maps.LatLng(place.y, place.x); // 마커가 표시될 위치입니다
 
             let marker = new kakao.maps.Marker({
                 map: map,
-                position: position,
+                position: markerPosition,
                 image : markerImage,
             });
 
             resultMarker.push(marker)
 
             let content = '<div class="customoverlay">' +
-                '    <span class="title">10</span>' +
-                '</div>';
+                          '    <span class="title">10</span>' +
+                          '</div>';
 
             // 커스텀 오버레이를 생성합니다
             let customOverlay = new kakao.maps.CustomOverlay({
                 map: map,
-                position: position,
+                position: markerPosition,
                 content: content,
                 yAnchor: 1
             });
-
             resultOverlay.push(customOverlay)
+
+            let clickContent = '<div class="overlay">' +
+                               '    <div class="content">' +
+                               '        <div class="text">' +
+                               // `            <div class="name">${info.name}</div>`+
+                               `            <div class="name">${place.place_name}</div>`+
+                               `            <div class="time">${info.timeStart}부터</div>` +
+                               `            <div class="time">${info.timeEnd}까지</div>` +
+                               '        </div>' +
+                               `        <img class="infoImg" src='https://user-images.githubusercontent.com/54919662/142676431-56e3f4a3-81d5-4391-9bd1-7b1379a8db34.png'/>`+
+                               '    </div>' +
+                               '</div>';
+
+            // 마커를 클릭했을 때 커스텀 오버레이를 표시합니다
+            kakao.maps.event.addListener(marker, 'click', function() {
+                console.log(place.place_url)
+                if (clickOverlay !== undefined) clickOverlay.setMap(null);
+                clickOverlay = new kakao.maps.CustomOverlay({
+                    content: clickContent,
+                    map: map,
+                    position: marker.getPosition()
+                });
+                clickOverlay.setMap(map);
+            });
         }
 
         function removeMarker() {
@@ -153,6 +182,7 @@ export const MainPage = () => {
             }
             resultMarker.pop()
             resultOverlay.pop()
+            if (clickOverlay !== undefined) clickOverlay.setMap(null);
         }
     }
 
