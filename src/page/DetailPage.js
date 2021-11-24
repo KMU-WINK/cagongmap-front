@@ -8,7 +8,6 @@ import {ResultText} from "../component/Detail/ResultText";
 import {Header} from "../component/Detail/Header";
 
 export const DetailPage = (props) => {
-    console.log(props)
     return <>
         <MobileView>
             <BackBtn/>

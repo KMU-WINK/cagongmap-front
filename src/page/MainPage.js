@@ -32,10 +32,11 @@ export const MainPage = () => {
     const [searchTable, setSearchTable] = useState('선택 안함')
     const [searchPlug, setSearchPlug] = useState('선택 안함')
     const [info, setInfo] = useState({
-        name : '스타벅스',
+        name : '',
         timeStart : 'AM 09:00',
         timeEnd : 'PM 10:00',
-        img : 'https://user-images.githubusercontent.com/54919662/142676431-56e3f4a3-81d5-4391-9bd1-7b1379a8db34.png',
+        img : '',
+        url : '',
     })
 
     useEffect(()=>{
@@ -53,7 +54,7 @@ export const MainPage = () => {
     const getSearchPlug = (searchPlug) => {
         setSearchPlug(searchPlug)
     }
-    window.cafeInfo = info.name;
+    window.cafeInfo = info;
     window.moveDetail = (info) => {
         history.push({
             pathname: '/detail',
@@ -162,7 +163,7 @@ export const MainPage = () => {
             });
             resultOverlay.push(customOverlay)
 
-            let clickContent = `<div class="overlay" onclick="moveDetail(name)">` +
+            let clickContent = `<div class="overlay" onclick="moveDetail(cafeInfo)">` +
                                '    <div class="content">' +
                                '        <div class="text">' +
                                `            <div class="name">${place.place_name}</div>`+
@@ -177,8 +178,14 @@ export const MainPage = () => {
 
             // 마커를 클릭했을 때 커스텀 오버레이를 표시합니다
             kakao.maps.event.addListener(marker, 'click', function() {
-                console.log(place)
-                window.cafeInfo = place;
+                setInfo({
+                    name : place.place_name,
+                    timeStart : 'AM 09:00',
+                    timeEnd : 'PM 10:00',
+                    img : 'https://user-images.githubusercontent.com/54919662/142676431-56e3f4a3-81d5-4391-9bd1-7b1379a8db34.png',
+                    url : place.place_url,
+                })
+
                 if (clickOverlay !== undefined) clickOverlay.setMap(null);
                 clickOverlay = new kakao.maps.CustomOverlay({
                     content: clickContent,
