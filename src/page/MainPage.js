@@ -11,6 +11,8 @@ import img_search from "../img/img_search.png";
 import img_search_active from "../img/img_search_active.png";
 import img_result from '../img/img_result.svg';
 import {PopUp} from "../component/PopUp/PopUp";
+import {useHistory} from "react-router-dom";
+import {DetailPage} from "./DetailPage";
 
 /*global kakao*/
 
@@ -22,16 +24,19 @@ let map;
 let clickOverlay;
 
 export const MainPage = () => {
+    const history = useHistory();
+
     const [plug, setPlug] = useState(false);
     const [focus, setFocus] = useState(false);
     const [select, setSelect] = useState('') // 어떤 팝업창을 띄울지 -> table 또는 plug, 팝업을 띄우지 않을 때는 ''
     const [searchTable, setSearchTable] = useState('선택 안함')
     const [searchPlug, setSearchPlug] = useState('선택 안함')
     const [info, setInfo] = useState({
-        name : '스타벅스',
+        name : '',
         timeStart : 'AM 09:00',
         timeEnd : 'PM 10:00',
-        img : 'https://user-images.githubusercontent.com/54919662/142676431-56e3f4a3-81d5-4391-9bd1-7b1379a8db34.png',
+        img : '',
+        url : '',
     })
 
     useEffect(()=>{
@@ -49,6 +54,15 @@ export const MainPage = () => {
     const getSearchPlug = (searchPlug) => {
         setSearchPlug(searchPlug)
     }
+    window.cafeInfo = info;
+    window.moveDetail = (info) => {
+        history.push({
+            pathname: '/detail',
+            state : info,
+        })
+        return <DetailPage/>
+    }
+
 
     const myLocate = () => {
         markers.pop()
@@ -99,7 +113,6 @@ export const MainPage = () => {
         if (focus) {
             setPlug(false);
             await myLocate();
-            // setFocus(true)
         }
     }
 
@@ -150,21 +163,29 @@ export const MainPage = () => {
             });
             resultOverlay.push(customOverlay)
 
-            let clickContent = '<div class="overlay">' +
+            let clickContent = `<div class="overlay" onclick="moveDetail(cafeInfo)">` +
                                '    <div class="content">' +
                                '        <div class="text">' +
-                               // `            <div class="name">${info.name}</div>`+
                                `            <div class="name">${place.place_name}</div>`+
                                `            <div class="time">${info.timeStart}부터</div>` +
                                `            <div class="time">${info.timeEnd}까지</div>` +
                                '        </div>' +
-                               `        <img class="infoImg" src='https://user-images.githubusercontent.com/54919662/142676431-56e3f4a3-81d5-4391-9bd1-7b1379a8db34.png'/>`+
+                               `        <div><img class="infoImg" src='https://user-images.githubusercontent.com/54919662/142676431-56e3f4a3-81d5-4391-9bd1-7b1379a8db34.png'/></div>`+
                                '    </div>' +
                                '</div>';
 
+
+
             // 마커를 클릭했을 때 커스텀 오버레이를 표시합니다
             kakao.maps.event.addListener(marker, 'click', function() {
-                console.log(place.place_url)
+                setInfo({
+                    name : place.place_name,
+                    timeStart : 'AM 09:00',
+                    timeEnd : 'PM 10:00',
+                    img : 'https://user-images.githubusercontent.com/54919662/142676431-56e3f4a3-81d5-4391-9bd1-7b1379a8db34.png',
+                    url : place.place_url,
+                })
+
                 if (clickOverlay !== undefined) clickOverlay.setMap(null);
                 clickOverlay = new kakao.maps.CustomOverlay({
                     content: clickContent,
@@ -173,6 +194,7 @@ export const MainPage = () => {
                 });
                 clickOverlay.setMap(map);
             });
+
         }
 
         function removeMarker() {
@@ -185,6 +207,7 @@ export const MainPage = () => {
             if (clickOverlay !== undefined) clickOverlay.setMap(null);
         }
     }
+
 
     return <>
         <Map id={"map"}>

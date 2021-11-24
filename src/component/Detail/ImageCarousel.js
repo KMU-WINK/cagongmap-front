@@ -1,5 +1,4 @@
 import styled from "styled-components";
-// import "react-responsive-carousel/lib/styles/carousel.min.css";
 import './Carousel.css'
 import { Carousel } from 'react-responsive-carousel';
 import img_slide from '../../img/img_slide.svg';
@@ -8,9 +7,6 @@ export const ImageCarousel = (props) => {
 
     return <Center mode={props.mode}>
         <Carousel dynamicHeight={false} showThumbs={false}>
-            <div>
-                <SlideImg mode={props.mode} src={img_slide}/>
-            </div>
             <div>
                 <SlideImg mode={props.mode} src={img_slide}/>
             </div>

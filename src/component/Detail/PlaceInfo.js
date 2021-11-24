@@ -1,17 +1,21 @@
 import styled from "styled-components";
 import React, {useState} from "react";
+import {useLocation} from "react-router-dom";
 
 export const PlaceInfo = (props) => {
-    const cafename = useState("스타벅스")
-    const start = useState("AM 09:00");
-    const end = useState("PM 10:00");
+    const location = useLocation();
+
+    const [cafename, setCafename] = useState(location.state.name)
+    const [start, setStart] = useState(location.state.timeStart);
+    const [end, setEnd] = useState(location.state.timeEnd);
+
     return <>
         <Container mode={props.mode}>
             <div>
                 <CafeName> {cafename} </CafeName>
                 <TimeText> {start}부터 {end}까지 </TimeText>
             </div>
-            <PlaceButton>NAVER PLACE</PlaceButton>
+            <PlaceButton onClick={()=>window.open(location.state.url, "_blank")}>NAVER PLACE</PlaceButton>
         </Container>
     </>
 }
