@@ -2,9 +2,9 @@ import styled from "styled-components";
 import React, {useState} from "react";
 
 export const PlaceInfo = (props) => {
-    const cafename = useState("스타벅스")
-    const start = useState("AM 09:00");
-    const end = useState("PM 10:00");
+    const [cafename, setCafename] = useState("스타벅스")
+    const [start, setStart] = useState("AM 09:00");
+    const [end, setEnd] = useState("PM 10:00");
     return <>
         <Container mode={props.mode}>
             <div>

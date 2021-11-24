@@ -12,6 +12,7 @@ import img_search_active from "../img/img_search_active.png";
 import img_result from '../img/img_result.svg';
 import {PopUp} from "../component/PopUp/PopUp";
 import {useHistory} from "react-router-dom";
+import {DetailPage} from "./DetailPage";
 
 /*global kakao*/
 
@@ -52,12 +53,13 @@ export const MainPage = () => {
     const getSearchPlug = (searchPlug) => {
         setSearchPlug(searchPlug)
     }
-
+    window.cafeInfo = info.name;
     window.moveDetail = (info) => {
         history.push({
             pathname: '/detail',
             state : info,
         })
+        return <DetailPage/>
     }
 
 
@@ -110,7 +112,6 @@ export const MainPage = () => {
         if (focus) {
             setPlug(false);
             await myLocate();
-            // setFocus(true)
         }
     }
 
@@ -161,15 +162,14 @@ export const MainPage = () => {
             });
             resultOverlay.push(customOverlay)
 
-            let clickContent = `<div class="overlay" onclick="moveDetail()"` +
+            let clickContent = `<div class="overlay" onclick="moveDetail(name)">` +
                                '    <div class="content">' +
                                '        <div class="text">' +
-                               // `            <div class="name">${info.name}</div>`+
                                `            <div class="name">${place.place_name}</div>`+
                                `            <div class="time">${info.timeStart}부터</div>` +
                                `            <div class="time">${info.timeEnd}까지</div>` +
                                '        </div>' +
-                               `        <img class="infoImg" src='https://user-images.githubusercontent.com/54919662/142676431-56e3f4a3-81d5-4391-9bd1-7b1379a8db34.png'/>`+
+                               `        <div><img class="infoImg" src='https://user-images.githubusercontent.com/54919662/142676431-56e3f4a3-81d5-4391-9bd1-7b1379a8db34.png'/></div>`+
                                '    </div>' +
                                '</div>';
 
@@ -177,7 +177,8 @@ export const MainPage = () => {
 
             // 마커를 클릭했을 때 커스텀 오버레이를 표시합니다
             kakao.maps.event.addListener(marker, 'click', function() {
-                console.log(place.place_url)
+                console.log(place)
+                window.cafeInfo = place;
                 if (clickOverlay !== undefined) clickOverlay.setMap(null);
                 clickOverlay = new kakao.maps.CustomOverlay({
                     content: clickContent,

@@ -3,7 +3,7 @@ import React, {useState} from "react";
 import img_result from '../../img/img_result.svg'
 
 export const ResultText = (props) => {
-    const resultNum = useState(2);
+    const [resultNum,setResultNum] = useState(2);
 
     return <>
         <ResultBox mode={props.mode}>
