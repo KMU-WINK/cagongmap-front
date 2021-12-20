@@ -4,16 +4,13 @@ import {useLocation} from "react-router-dom";
 
 export const PlaceInfo = (props) => {
     const location = useLocation();
-
-    const [cafename, setCafename] = useState(location.state.name)
-    const [start, setStart] = useState(location.state.timeStart);
-    const [end, setEnd] = useState(location.state.timeEnd);
+    console.log(location.state);
 
     return <>
         <Container mode={props.mode}>
             <div>
-                <CafeName> {cafename} </CafeName>
-                <TimeText> {start}부터 {end}까지 </TimeText>
+                <CafeName> {location.state.name} </CafeName>
+                <TimeText> {location.state.openTime}부터 {location.state.closeTime}까지 </TimeText>
             </div>
             <PlaceButton onClick={()=>window.open(location.state.url, "_blank")}>NAVER PLACE</PlaceButton>
         </Container>

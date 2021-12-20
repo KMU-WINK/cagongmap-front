@@ -9,10 +9,9 @@ import img_menu1 from "../img/img_menu1.png";
 import img_menu2 from "../img/img_menu2.png";
 import img_search from "../img/img_search.png";
 import img_search_active from "../img/img_search_active.png";
-import img_result from '../img/img_result.svg';
 import {PopUp} from "../component/PopUp/PopUp";
 import {useHistory} from "react-router-dom";
-import {DetailPage} from "./DetailPage";
+import {findCafe, findAllCafe} from '../API';
 
 /*global kakao*/
 
@@ -31,13 +30,17 @@ export const MainPage = () => {
     const [select, setSelect] = useState('') // 어떤 팝업창을 띄울지 -> table 또는 plug, 팝업을 띄우지 않을 때는 ''
     const [searchTable, setSearchTable] = useState('선택 안함')
     const [searchPlug, setSearchPlug] = useState('선택 안함')
-    const [info, setInfo] = useState({
+    const [search, setSearch] = useState(['all','all'])
+    const [cafeInfo, setCafeInfo] = useState({
+        condition : {},
         name : '',
-        timeStart : 'AM 09:00',
-        timeEnd : 'PM 10:00',
-        img : '',
+        openTime : '',
+        closeTime : '',
+        tableInfo : {},
+        img : {},
         url : '',
     })
+    const [result, setResult] = useState({});
 
     useEffect(()=>{
         myLocate();
@@ -54,13 +57,14 @@ export const MainPage = () => {
     const getSearchPlug = (searchPlug) => {
         setSearchPlug(searchPlug)
     }
-    window.cafeInfo = info;
-    window.moveDetail = (info) => {
+
+    window.cafeInfo = cafeInfo;
+    window.moveDetail = (place) => {
+        window.cafeInfo = place;
         history.push({
             pathname: '/detail',
-            state : info,
+            state : place,
         })
-        return <DetailPage/>
     }
 
 
@@ -73,29 +77,30 @@ export const MainPage = () => {
             level: 5
         };
 
-        // 현재 위치
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function (position) {
-                let lat = position.coords.latitude,
-                    lon = position.coords.longitude;
+        // // 현재 위치
+        // if (navigator.geolocation) {
+        //     navigator.geolocation.getCurrentPosition(function (position) {
+        //         let lat = position.coords.latitude,
+        //             lon = position.coords.longitude;
+        //
+        //         let locPosition = new kakao.maps.LatLng(lat, lon)
+        //         displayMyLocate(locPosition);
+        //     });
+        // } else {
+        //     let locPosition = new kakao.maps.LatLng(37.5677463677699, 126.9153946742084)
+        //     displayMyLocate(locPosition);
+        // }
 
-                let locPosition = new kakao.maps.LatLng(lat, lon)
-                displayMyLocate(locPosition);
-            });
-        } else {
-            let locPosition = new kakao.maps.LatLng(37.5677463677699, 126.9153946742084)
-            displayMyLocate(locPosition);
-        }
-
+        let locPosition = new kakao.maps.LatLng(37.610189448398906, 126.99703140609459)
         map = new kakao.maps.Map(container, options);
+        displayMyLocate(locPosition)
 
         function displayMyLocate(locPosition) {
             let imageSrc = 'https://user-images.githubusercontent.com/54919662/140506553-d8210702-d80a-4348-97bd-1ed9df1eb937.png', // 마커이미지의 주소입니다
                 imageSize = new kakao.maps.Size(42, 42), // 마커이미지의 크기입니다
                 imageOption = {offset: new kakao.maps.Point(20, 20)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
 
-            let markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption),
-                markerPosition = new kakao.maps.LatLng(37.54699, 127.09598); // 마커가 표시될 위치입니다
+            let markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption)
 
             // 마커를 생성합니다.
             new kakao.maps.Marker({
@@ -118,96 +123,109 @@ export const MainPage = () => {
 
     const clickPlug = () => {
         setPlug(!plug)
-
-        let ps = new kakao.maps.services.Places(map);
-
-        // 카테고리로 카페 검색
-        ps.categorySearch('CE7', placesSearchCB, {useMapBounds: true});
-
-        // 키워드 검색 완료 시 호출되는 콜백함수
-        function placesSearchCB(data, status, pagination) {
-            if (status === kakao.maps.services.Status.OK) {
-                for (let i = 0; i < data.length; i++) {
-                    if (!plug) displayMarker(data[i]);
-                    else removeMarker()
-                }
-            }
-        }
-
-        function displayMarker(place) {
-            let imageSrc = 'https://user-images.githubusercontent.com/54919662/140638676-3e057f62-9685-43c1-a97b-8b982621a1cc.png', // 마커이미지의 주소입니다
-                imageSize = new kakao.maps.Size(36, 36), // 마커이미지의 크기입니다
-                imageOption = {offset: new kakao.maps.Point(18, 30)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
-
-            let markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption),
-                markerPosition = new kakao.maps.LatLng(place.y, place.x); // 마커가 표시될 위치입니다
-
-            let marker = new kakao.maps.Marker({
-                map: map,
-                position: markerPosition,
-                image : markerImage,
-            });
-
-            resultMarker.push(marker)
-
-            let content = '<div class="customoverlay">' +
-                          '    <span class="title">10</span>' +
-                          '</div>';
-
-            // 커스텀 오버레이를 생성합니다
-            let customOverlay = new kakao.maps.CustomOverlay({
-                map: map,
-                position: markerPosition,
-                content: content,
-                yAnchor: 1
-            });
-            resultOverlay.push(customOverlay)
-
-            let clickContent = `<div class="overlay" onclick="moveDetail(cafeInfo)">` +
-                               '    <div class="content">' +
-                               '        <div class="text">' +
-                               `            <div class="name">${place.place_name}</div>`+
-                               `            <div class="time">${info.timeStart}부터</div>` +
-                               `            <div class="time">${info.timeEnd}까지</div>` +
-                               '        </div>' +
-                               `        <div><img class="infoImg" src='https://user-images.githubusercontent.com/54919662/142676431-56e3f4a3-81d5-4391-9bd1-7b1379a8db34.png'/></div>`+
-                               '    </div>' +
-                               '</div>';
-
-
-
-            // 마커를 클릭했을 때 커스텀 오버레이를 표시합니다
-            kakao.maps.event.addListener(marker, 'click', function() {
-                setInfo({
-                    name : place.place_name,
-                    timeStart : 'AM 09:00',
-                    timeEnd : 'PM 10:00',
-                    img : 'https://user-images.githubusercontent.com/54919662/142676431-56e3f4a3-81d5-4391-9bd1-7b1379a8db34.png',
-                    url : place.place_url,
-                })
-
-                if (clickOverlay !== undefined) clickOverlay.setMap(null);
-                clickOverlay = new kakao.maps.CustomOverlay({
-                    content: clickContent,
-                    map: map,
-                    position: marker.getPosition()
-                });
-                clickOverlay.setMap(map);
-            });
-
-        }
-
-        function removeMarker() {
-            for ( let i = 0; i < resultMarker.length; i++ ) {
-                resultMarker[i].setMap(null);
-                resultOverlay[i].setMap(null);
-            }
-            resultMarker.pop()
-            resultOverlay.pop()
-            if (clickOverlay !== undefined) clickOverlay.setMap(null);
+        findCafe().then(r=>setResult(r.data));
+        for (let i=0; i<result.length; i++){
+            if (!plug) displayMarker(result[i], 'all', 'all');
+            else removeMarker();
         }
     }
 
+    function displayMarker(place, table, plug) {
+        let imageSrc = 'https://user-images.githubusercontent.com/54919662/140638676-3e057f62-9685-43c1-a97b-8b982621a1cc.png', // 마커이미지의 주소입니다
+            imageSize = new kakao.maps.Size(36, 36), // 마커이미지의 크기입니다
+            imageOption = {offset: new kakao.maps.Point(18, 30)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+
+        let markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption),
+            markerPosition = new kakao.maps.LatLng(place.location.coordinates[1], place.location.coordinates[0]); // 마커가 표시될 위치입니다
+
+        let marker = new kakao.maps.Marker({
+            map: map,
+            position: markerPosition,
+            image : markerImage,
+        });
+
+        resultMarker.push(marker)
+
+        let content = '<div class="customoverlay">' +
+            `    <span class="title">${place.totalOfTables}</span>` +
+            '</div>';
+
+        // 커스텀 오버레이를 생성합니다
+        let customOverlay = new kakao.maps.CustomOverlay({
+            map: map,
+            position: markerPosition,
+            content: content,
+            yAnchor: 1
+        });
+        resultOverlay.push(customOverlay)
+
+        let clickContent = `<div class="overlay" onclick="moveDetail(cafeInfo)">` +
+            '    <div class="content">' +
+            '        <div class="text">' +
+            `            <div class="name">${place.name}</div>`+
+            `            <div class="time">${place.openTime}부터</div>` +
+            `            <div class="time">${place.closeTime}까지</div>` +
+            '        </div>' +
+            `        <div><img class="infoImg" src=${place.images}/></div>`+
+            '    </div>' +
+            '</div>';
+
+
+
+        // 마커를 클릭했을 때 커스텀 오버레이를 표시합니다
+        kakao.maps.event.addListener(marker, 'click', function() {
+            setCafeInfo({
+                condition : [table, plug],
+                name : place.name,
+                openTime : place.openTime,
+                closeTime : place.closeTime,
+                tableInfo : place.tables,
+                img : place.images,
+                url : '',
+            })
+
+            if (clickOverlay !== undefined) clickOverlay.setMap(null);
+            clickOverlay = new kakao.maps.CustomOverlay({
+                content: clickContent,
+                map: map,
+                position: marker.getPosition()
+            });
+            clickOverlay.setMap(map);
+        });
+    }
+
+    function removeMarker() {
+        for ( let i = 0; i < resultMarker.length; i++ ) {
+            resultMarker[i].setMap(null);
+            resultOverlay[i].setMap(null);
+        }
+        resultMarker.pop()
+        resultOverlay.pop()
+        if (clickOverlay !== undefined) clickOverlay.setMap(null);
+    }
+
+    const clickSearch = (table, plug) => {
+        console.log(table, plug);
+        removeMarker()
+        if (!(searchTable === '선택 안함' || searchPlug === '선택 안함')) {
+            if (table === '싱글') table = 'single';
+            else if (table === '더블') table = 'double';
+            else if (table === '바') table = 'bar';
+            else if (table === '상관 없음') table = -1;
+
+            if (plug === '1개 이상') plug = 1;
+            else if (plug === '2개 이상') plug = 2;
+            else if (plug === '3개 이상') plug = 3;
+            else if (plug === '상관 없음') plug = -1;
+        }
+        findCafe(table, plug).then(r=>setResult(r.data));
+        console.log(result);
+
+        for (let i = 0; i < result.length; i++) {
+            if (plug) displayMarker(result[i], table, plug);
+            else removeMarker()
+        }
+    }
 
     return <>
         <Map id={"map"}>
@@ -235,7 +253,7 @@ export const MainPage = () => {
                     <img className="img_outlet" src={img_menu2} alt="outlet"/>
                     <MenuLabel>콘센트: {searchPlug}</MenuLabel>
                 </EachMenu>
-                <EachMenu border={0} margin={[5,10]} background={!(searchTable === '선택 안함' || searchPlug === '선택 안함')}>
+                <EachMenu border={0} margin={[5,10]} background={!(searchTable === '선택 안함' || searchPlug === '선택 안함')} onClick={()=>clickSearch(searchTable, searchPlug)}>
                     {!(searchTable === '선택 안함' || searchPlug === '선택 안함')?
                         <img className="img_search" src={img_search_active} alt="search"/>
                         :
@@ -283,6 +301,7 @@ const WhitePlugIcon = styled.img.attrs({
 const PlugButton = styled.div`
   position: absolute;
   width: 70px;
+  
   height: 70px;
   right: 20px;
   top: 20px;

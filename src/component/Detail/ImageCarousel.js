@@ -3,16 +3,17 @@ import './Carousel.css'
 import { Carousel } from 'react-responsive-carousel';
 import img_slide from '../../img/img_slide.svg';
 import './Carousel.css'
+import {useLocation} from "react-router-dom";
 export const ImageCarousel = (props) => {
-
+    const location = useLocation();
+    console.log(location.state.images)
     return <Center mode={props.mode}>
         <Carousel dynamicHeight={false} showThumbs={false}>
-            <div>
-                <SlideImg mode={props.mode} src={img_slide}/>
-            </div>
-            <div>
-                <SlideImg mode={props.mode} src={img_slide}/>
-            </div>
+            {location.state.img.map(slideImg =>
+                <div>
+                    <SlideImg mode={props.mode} src={slideImg}/>
+                </div>
+            )}
         </Carousel>
     </Center>
 }
