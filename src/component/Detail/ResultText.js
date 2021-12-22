@@ -1,9 +1,8 @@
 import styled from "styled-components";
-import React, {useState} from "react";
+import React from "react";
 import img_result from '../../img/img_result.svg'
 
 export const ResultText = (props) => {
-    const [resultNum,setResultNum] = useState(2);
 
     return <>
         <ResultBox mode={props.mode}>
@@ -11,13 +10,13 @@ export const ResultText = (props) => {
                 <>
                     <div>
                         <ResultSelect>선택한 조건에 만족하는</ResultSelect>
-                        <ResultSelect>테이블은 <Color>{resultNum}개</Color>입니다.</ResultSelect>
+                        <ResultSelect>테이블은 <Color color={props.resultNum!=0?'#4AD395':'#feeb1b'}>{props.resultNum}개</Color>입니다.</ResultSelect>
                     </div>
                     <MapImg/>
                 </>
                 :
                 <>
-                    <ResultSelect>선택한 조건에 만족하는 테이블은 <Color>{resultNum}개</Color>입니다.</ResultSelect>
+                    <ResultSelect>선택한 조건에 만족하는 테이블은 <Color color={props.resultNum!=0?'#4AD395':'#feeb1b'}>{props.resultNum}개</Color>입니다.</ResultSelect>
                     <MapImg/>
                 </>
             }
@@ -46,7 +45,8 @@ const Color = styled.span`
   font-style: normal;
   font-weight: normal;
   font-size: 18px;
-  color: #4AD395;
+  color: ${props=>props.color};
+  margin-left : 4px;
 `
 
 const MapImg = styled.img.attrs({

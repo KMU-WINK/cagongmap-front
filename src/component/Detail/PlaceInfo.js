@@ -1,18 +1,32 @@
 import styled from "styled-components";
-import React, {useState} from "react";
+import React from "react";
 import {useLocation} from "react-router-dom";
 
 export const PlaceInfo = (props) => {
     const location = useLocation();
-    console.log(location.state);
+    const url =  location.state.url
 
     return <>
         <Container mode={props.mode}>
             <div>
                 <CafeName> {location.state.name} </CafeName>
-                <TimeText> {location.state.openTime}부터 {location.state.closeTime}까지 </TimeText>
+                {location.state.openTime ?
+                    <TimeText> {location.state.openTime}부터 {location.state.closeTime}까지 </TimeText>
+                    :
+                    <>
+                        <TimeText>{location.state.address}</TimeText>
+                        {location.state.phone?
+                            <TimeText>{location.state.phone}</TimeText>
+                            : null
+                        }
+                    </>
+                }
             </div>
-            <PlaceButton onClick={()=>window.open(location.state.url, "_blank")}>NAVER PLACE</PlaceButton>
+            {location.state.openTime ?
+                <PlaceButton color={'#4AD395'} onClick={() => window.open(url,"_blank")}>NAVER PLACE</PlaceButton>
+                :
+                <PlaceButton color={'#feeb1b'} onClick={() => window.open(url, "_blank")}>KAKAO MAP</PlaceButton>
+            }
         </Container>
     </>
 }
@@ -29,13 +43,12 @@ const CafeName = styled.div`
   font-family: Roboto;
   font-style: normal;
   font-weight: bold;
-  font-size: 30px;
+  font-size: 28px;
   color: #000000;
   margin-bottom : 5px;
 
 `
 const TimeText = styled.div`
-  //width: 224px;
   font-family: Roboto;
   font-style: normal;
   font-weight: normal;
@@ -47,7 +60,7 @@ const TimeText = styled.div`
 const PlaceButton = styled.button`
   width: 110px;
   height: 66px;
-  background: #4AD395;
+  background: ${props=>props.color};
   border: none;
   border-radius: 10px;
   
@@ -58,6 +71,4 @@ const PlaceButton = styled.button`
   color: white;
   line-height: 21px;
   text-align: center;
-  
-
 `

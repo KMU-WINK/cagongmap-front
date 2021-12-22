@@ -33,7 +33,7 @@
 }
 
 .content{
-  width : 70%;
+  width : 80%;
   margin : auto;
   display : flex;
   justify-content: space-between;
@@ -66,4 +66,21 @@
   padding-top : 20px;
   width: 60px;
   height: 60px;
+}
+
+.contentImg1{
+  width : 18px;
+  height : 18px;
+  padding-top: 3px;
+  padding-right : 5px;
+  vertical-align : middle;
+}
+
+.contentImg2{
+  width : 15px;
+  height : 15px;
+  padding-left : 3px;
+  padding-top: 3px;
+  padding-right : 5px;
+  vertical-align : middle;
 }
