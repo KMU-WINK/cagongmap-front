@@ -1,11 +1,17 @@
 import styled from "styled-components";
 import img_plug from "../../img/img_plug.svg";
+import img_plug_yellow from "../../img/img_plug_yellow.png";
+import '../MainPage/Button.css';
 
-export const Header = () => {
+export const Header = (props) => {
     return <>
         <Headercontainer>
-            <PlugIcon/>
-            <HeaderLabel>CAGONG-MAP</HeaderLabel>
+            {props.resultNum != 0 ?
+                <PlugIcon/>
+                :
+                <PlugIconY/>
+            }
+            <HeaderLabel color={props.resultNum != 0?'#4AD395':'#feeb1b'}>CAGONG-MAP</HeaderLabel>
         </Headercontainer>
         <Line/>
     </>
@@ -25,6 +31,14 @@ const PlugIcon = styled.img.attrs({
     margin-top: 12px;
     margin-bottom : 12px;
 `
+const PlugIconY = styled.img.attrs({
+    src : img_plug_yellow
+})`
+    width: 50px;
+    height: 50px;
+    margin-top: 12px;
+    margin-bottom : 12px;
+`
 const HeaderLabel = styled.div`
     width: 198px;
     height: 35px;
@@ -37,7 +51,7 @@ const HeaderLabel = styled.div`
     font-size: 30px;
     line-height: 35px;
 
-    color: #4AD395;
+    color: ${props=>props.color};
 `
 
 const Line = styled.div`

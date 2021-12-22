@@ -12,9 +12,11 @@ export const PopUp = ({state, getState, getSearchTable, getSearchPlug}) => {
     }
 
     const clickSelect = (value) => {
-        if (state === 'table') getSearchTable(value);
-        else if (state === 'plug') getSearchPlug(value+'개 이상');
-        if (value !== 0) getState('')
+        if (value !== 0) {
+            if (state === 'table') getSearchTable(value);
+            else if (state === 'plug') getSearchPlug(value + '개 이상');
+            getState('')
+        }
     }
 
     return <>

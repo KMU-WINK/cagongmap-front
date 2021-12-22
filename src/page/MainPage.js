@@ -9,18 +9,17 @@ import img_menu1 from "../img/img_menu1.png";
 import img_menu2 from "../img/img_menu2.png";
 import img_search from "../img/img_search.png";
 import img_search_active from "../img/img_search_active.png";
-import img_result from '../img/img_result.svg';
 import {PopUp} from "../component/PopUp/PopUp";
 import {useHistory} from "react-router-dom";
-import {DetailPage} from "./DetailPage";
+import {findCafe} from '../API';
 
 /*global kakao*/
 
 const markers = []
 const resultMarker = []
 const resultOverlay = []
-const resultClickOverlay = []
-let map;
+const cafe = []
+let map,locPosition;
 let clickOverlay;
 
 export const MainPage = () => {
@@ -31,13 +30,16 @@ export const MainPage = () => {
     const [select, setSelect] = useState('') // 어떤 팝업창을 띄울지 -> table 또는 plug, 팝업을 띄우지 않을 때는 ''
     const [searchTable, setSearchTable] = useState('선택 안함')
     const [searchPlug, setSearchPlug] = useState('선택 안함')
-    const [info, setInfo] = useState({
+    const [cafeInfo, setCafeInfo] = useState({
+        id : '',
+        condition : {},
         name : '',
-        timeStart : 'AM 09:00',
-        timeEnd : 'PM 10:00',
-        img : '',
-        url : '',
+        openTime : '',
+        closeTime : '',
+        tableInfo : {},
+        img : {},
     })
+    const [result, setResult] = useState({});
 
     useEffect(()=>{
         myLocate();
@@ -54,13 +56,14 @@ export const MainPage = () => {
     const getSearchPlug = (searchPlug) => {
         setSearchPlug(searchPlug)
     }
-    window.cafeInfo = info;
-    window.moveDetail = (info) => {
+
+    window.cafeInfo = cafeInfo;
+    window.moveDetail = (place) => {
+        window.cafeInfo = place;
         history.push({
             pathname: '/detail',
-            state : info,
+            state : place,
         })
-        return <DetailPage/>
     }
 
 
@@ -73,29 +76,28 @@ export const MainPage = () => {
             level: 5
         };
 
+        locPosition = new kakao.maps.LatLng(37.610189448398906, 126.99703140609459)
+
         // 현재 위치
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
                 let lat = position.coords.latitude,
                     lon = position.coords.longitude;
 
-                let locPosition = new kakao.maps.LatLng(lat, lon)
+                locPosition = new kakao.maps.LatLng(lat, lon)
                 displayMyLocate(locPosition);
             });
-        } else {
-            let locPosition = new kakao.maps.LatLng(37.5677463677699, 126.9153946742084)
-            displayMyLocate(locPosition);
         }
 
         map = new kakao.maps.Map(container, options);
+        displayMyLocate(locPosition)
 
         function displayMyLocate(locPosition) {
             let imageSrc = 'https://user-images.githubusercontent.com/54919662/140506553-d8210702-d80a-4348-97bd-1ed9df1eb937.png', // 마커이미지의 주소입니다
                 imageSize = new kakao.maps.Size(42, 42), // 마커이미지의 크기입니다
                 imageOption = {offset: new kakao.maps.Point(20, 20)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
 
-            let markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption),
-                markerPosition = new kakao.maps.LatLng(37.54699, 127.09598); // 마커가 표시될 위치입니다
+            let markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption)
 
             // 마커를 생성합니다.
             new kakao.maps.Marker({
@@ -118,6 +120,14 @@ export const MainPage = () => {
 
     const clickPlug = () => {
         setPlug(!plug)
+        findCafe(locPosition.La,locPosition.Ma,'all','all').then(r=>setResult(r.data));
+        for (let i=0; i<result.length; i++){
+            if (!plug) displayMarker('DB',result[i], 'all', 'all');
+            else{
+                removeMarker();
+                cafe.pop();
+            }
+        }
 
         let ps = new kakao.maps.services.Places(map);
 
@@ -128,31 +138,70 @@ export const MainPage = () => {
         function placesSearchCB(data, status, pagination) {
             if (status === kakao.maps.services.Status.OK) {
                 for (let i = 0; i < data.length; i++) {
-                    if (!plug) displayMarker(data[i]);
-                    else removeMarker()
+                    if (!plug) displayMarker('kakao',data[i], -1, -1);
+                    else {
+                        removeMarker()
+                        cafe.pop()
+                    }
                 }
             }
         }
+    }
 
-        function displayMarker(place) {
-            let imageSrc = 'https://user-images.githubusercontent.com/54919662/140638676-3e057f62-9685-43c1-a97b-8b982621a1cc.png', // 마커이미지의 주소입니다
-                imageSize = new kakao.maps.Size(36, 36), // 마커이미지의 크기입니다
+    function displayMarker(type, place, table, plug) {
+        let correct = true;
+        let imageSrc, markerPosition, content, clickContent;
+        if (type === 'DB'){
+            cafe.push(place.name.replaceAll(" ", ""))
+            imageSrc = 'https://user-images.githubusercontent.com/54919662/140638676-3e057f62-9685-43c1-a97b-8b982621a1cc.png' // 마커이미지의 주소입니다
+            markerPosition = new kakao.maps.LatLng(place.location.coordinates[1], place.location.coordinates[0]); // 마커가 표시될 위치입니다
+            content = '<div class="customoverlay">' +
+                      `    <span class="title">${place.totalOfTables}</span>` +
+                      '</div>';
+            clickContent = `<div class="overlay" onclick="moveDetail(cafeInfo)">` +
+                           '    <div class="content">' +
+                           '        <div class="text">' +
+                           `            <div class="name">${place.name}</div>`+
+                           `            <div class="time">${setTime(place.openTime)}부터</div>` +
+                           `            <div class="time">${setTime(place.closeTime)}까지</div>` +
+                           '        </div>' +
+                           `        <div><img class="infoImg" src=${place.images}/></div>`+
+                           '    </div>' +
+                           '</div>';
+        }
+        else if (type === 'kakao'){
+            let cafeName = place.place_name.replaceAll(" ", "");
+            for (let i=0;i<cafe.length;i++){
+                if (cafe[i] === cafeName) correct = false;
+            }
+            imageSrc = 'https://user-images.githubusercontent.com/54919662/147122611-014a3332-57fa-4a77-8107-f926705117a4.png' // 마커이미지의 주소입니다
+            markerPosition = new kakao.maps.LatLng(place.y, place.x); // 마커가 표시될 위치입니다
+            content = '<div class="customoverlay">' +
+                      `    <span class="title"></span>` +
+                      '</div>';
+            clickContent = `<div class="overlay" onclick="moveDetail(cafeInfo)">` +
+                           '    <div class="content">' +
+                           '        <div class="text">' +
+                           `            <div class="name">${place.place_name}</div>`+
+                           `            <div class="time"><img class="contentImg1" src="https://user-images.githubusercontent.com/54919662/147132679-ac5844fb-d768-43a6-a0c9-332b622e6e41.png"/>${place.road_address_name}</div>` +
+                           `            <div class="time"><img class="contentImg2" src="https://user-images.githubusercontent.com/54919662/147132750-31a80170-5ace-4afa-ad3a-e2c4995792ef.png"/>${place.phone? place.phone:'없음'}</div>` +
+                           '        </div>' +
+                           '    </div>' +
+                           '</div>';
+        }
+        if (correct) {
+            let imageSize = new kakao.maps.Size(36, 36), // 마커이미지의 크기입니다
                 imageOption = {offset: new kakao.maps.Point(18, 30)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
 
-            let markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption),
-                markerPosition = new kakao.maps.LatLng(place.y, place.x); // 마커가 표시될 위치입니다
+            let markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption)
 
             let marker = new kakao.maps.Marker({
                 map: map,
                 position: markerPosition,
-                image : markerImage,
+                image: markerImage,
             });
 
             resultMarker.push(marker)
-
-            let content = '<div class="customoverlay">' +
-                          '    <span class="title">10</span>' +
-                          '</div>';
 
             // 커스텀 오버레이를 생성합니다
             let customOverlay = new kakao.maps.CustomOverlay({
@@ -163,27 +212,19 @@ export const MainPage = () => {
             });
             resultOverlay.push(customOverlay)
 
-            let clickContent = `<div class="overlay" onclick="moveDetail(cafeInfo)">` +
-                               '    <div class="content">' +
-                               '        <div class="text">' +
-                               `            <div class="name">${place.place_name}</div>`+
-                               `            <div class="time">${info.timeStart}부터</div>` +
-                               `            <div class="time">${info.timeEnd}까지</div>` +
-                               '        </div>' +
-                               `        <div><img class="infoImg" src='https://user-images.githubusercontent.com/54919662/142676431-56e3f4a3-81d5-4391-9bd1-7b1379a8db34.png'/></div>`+
-                               '    </div>' +
-                               '</div>';
-
-
-
             // 마커를 클릭했을 때 커스텀 오버레이를 표시합니다
-            kakao.maps.event.addListener(marker, 'click', function() {
-                setInfo({
-                    name : place.place_name,
-                    timeStart : 'AM 09:00',
-                    timeEnd : 'PM 10:00',
-                    img : 'https://user-images.githubusercontent.com/54919662/142676431-56e3f4a3-81d5-4391-9bd1-7b1379a8db34.png',
-                    url : place.place_url,
+            kakao.maps.event.addListener(marker, 'click', function () {
+                setCafeInfo({
+                    id: place._id,
+                    condition: [table, plug],
+                    name: place.name ? place.name : place.place_name,
+                    openTime: place.openTime ? setTime(place.openTime) : null,
+                    closeTime: place.closeTime ? setTime(place.closeTime) : null,
+                    address: place.road_address_name ? place.road_address_name : null,
+                    phone: place.phone ? place.phone : null,
+                    tableInfo: place.tables ? place.tables : null,
+                    img: place.images ? place.images : null,
+                    url: place.place ? place.place : place.place_url,
                 })
 
                 if (clickOverlay !== undefined) clickOverlay.setMap(null);
@@ -194,20 +235,51 @@ export const MainPage = () => {
                 });
                 clickOverlay.setMap(map);
             });
-
-        }
-
-        function removeMarker() {
-            for ( let i = 0; i < resultMarker.length; i++ ) {
-                resultMarker[i].setMap(null);
-                resultOverlay[i].setMap(null);
-            }
-            resultMarker.pop()
-            resultOverlay.pop()
-            if (clickOverlay !== undefined) clickOverlay.setMap(null);
         }
     }
 
+    function removeMarker() {
+        for ( let i = 0; i < resultMarker.length; i++ ) {
+            resultMarker[i].setMap(null);
+            resultOverlay[i].setMap(null);
+        }
+        resultMarker.pop()
+        resultOverlay.pop()
+        if (clickOverlay !== undefined) clickOverlay.setMap(null);
+    }
+
+    const clickSearch = (table, plug) => {
+        removeMarker()
+        if (!(searchTable === '선택 안함' || searchPlug === '선택 안함')) {
+            if (table === '싱글') table = 'single';
+            else if (table === '더블') table = 'double';
+            else if (table === '바') table = 'bar';
+            else if (table === '상관 없음') table = -1;
+
+            if (plug === '1개 이상') plug = 1;
+            else if (plug === '2개 이상') plug = 2;
+            else if (plug === '3개 이상') plug = 3;
+            else if (plug === '상관 없음') plug = -1;
+        }
+        findCafe(locPosition.La,locPosition.Ma,table, plug).then(r=>setResult(r.data));
+        for (let i = 0; i < result.length; i++) {
+            if (plug) displayMarker('DB',result[i], table, plug);
+            else removeMarker()
+        }
+    }
+
+    const setTime = (time) => {
+        let s_time = time.split(':')
+        let n_time = ""
+        if (parseInt(s_time[0]) < 12) n_time += "AM " + s_time[0] + ":" + s_time[1];
+        else if (parseInt(s_time[0]) === 12) n_time += "PM " + s_time[0] + ":" + s_time[1];
+        else if (parseInt(s_time[0]) === 24) n_time += "AM 00:" + s_time[1];
+        else {
+            n_time += parseInt(s_time[0])-12 + ":" + s_time[1];
+            n_time = "PM " + n_time;
+        }
+        return n_time
+    }
 
     return <>
         <Map id={"map"}>
@@ -235,7 +307,7 @@ export const MainPage = () => {
                     <img className="img_outlet" src={img_menu2} alt="outlet"/>
                     <MenuLabel>콘센트: {searchPlug}</MenuLabel>
                 </EachMenu>
-                <EachMenu border={0} margin={[5,10]} background={!(searchTable === '선택 안함' || searchPlug === '선택 안함')}>
+                <EachMenu border={0} margin={[5,10]} background={!(searchTable === '선택 안함' || searchPlug === '선택 안함')} onClick={()=>!(searchTable === '선택 안함' || searchPlug === '선택 안함')?clickSearch(searchTable, searchPlug):null}>
                     {!(searchTable === '선택 안함' || searchPlug === '선택 안함')?
                         <img className="img_search" src={img_search_active} alt="search"/>
                         :
@@ -283,6 +355,7 @@ const WhitePlugIcon = styled.img.attrs({
 const PlugButton = styled.div`
   position: absolute;
   width: 70px;
+  
   height: 70px;
   right: 20px;
   top: 20px;
