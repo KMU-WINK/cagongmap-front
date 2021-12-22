@@ -249,7 +249,6 @@ export const MainPage = () => {
     }
 
     const clickSearch = (table, plug) => {
-        console.log(table, plug);
         removeMarker()
         if (!(searchTable === '선택 안함' || searchPlug === '선택 안함')) {
             if (table === '싱글') table = 'single';
@@ -263,8 +262,6 @@ export const MainPage = () => {
             else if (plug === '상관 없음') plug = -1;
         }
         findCafe(locPosition.La,locPosition.Ma,table, plug).then(r=>setResult(r.data));
-        console.log(result);
-
         for (let i = 0; i < result.length; i++) {
             if (plug) displayMarker('DB',result[i], table, plug);
             else removeMarker()

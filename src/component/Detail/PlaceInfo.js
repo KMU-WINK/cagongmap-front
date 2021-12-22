@@ -13,13 +13,19 @@ export const PlaceInfo = (props) => {
                 {location.state.openTime ?
                     <TimeText> {location.state.openTime}부터 {location.state.closeTime}까지 </TimeText>
                     :
-                    <>
-                        <TimeText>{location.state.address}</TimeText>
+                    <div>
+                        <Text>
+                            <LocImg src={'https://user-images.githubusercontent.com/54919662/147132679-ac5844fb-d768-43a6-a0c9-332b622e6e41.png'}/>
+                            <TimeText>{location.state.address}</TimeText>
+                        </Text>
                         {location.state.phone?
-                            <TimeText>{location.state.phone}</TimeText>
+                            <Text>
+                                <TellImg src={'https://user-images.githubusercontent.com/54919662/147132750-31a80170-5ace-4afa-ad3a-e2c4995792ef.png'}/>
+                                <TimeText>{location.state.phone}</TimeText>
+                            </Text>
                             : null
                         }
-                    </>
+                    </div>
                 }
             </div>
             {location.state.openTime ?
@@ -71,4 +77,19 @@ const PlaceButton = styled.button`
   color: white;
   line-height: 21px;
   text-align: center;
+`
+const Text = styled.div`
+  display : flex;
+`
+
+const LocImg = styled.img`
+  width : 20px;
+  height : 20px;
+  margin-right : 5px;
+`
+
+const TellImg = styled.img`
+  width : 17px;
+  height : 17px;
+  margin-right : 7px;
 `

@@ -2,7 +2,6 @@ export const findCafe = async(lng, lat, table, plug) => {
     let search = ''
     if (table !== undefined && plug !== undefined) {
         if (table !== -1 && table !== 'all') {
-            console.log("checkTable")
             search += `&typeOfTable=${table}`
         }
         if (plug !== -1 && plug !== 'all') search += `&countOfPlugs=${plug}`
